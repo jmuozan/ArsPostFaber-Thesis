@@ -1,0 +1,242 @@
+## Core LaTeX auxiliary files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+## Intermediate documents
+*.dvi
+*.xdv
+*-converted-to.*
+
+## Bibliography auxiliary files
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+## Build tool auxiliary files
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+## Build tool directories for auxiliary files
+aux/
+fdb_latexmk/
+fls/
+
+## Latexmk
+*.fdb_latexmk
+*.figlist
+*.makefile
+*.upa
+*.upb
+
+## MiKTeX
+*.maf
+*.mlf
+*.mlt
+*.mtc[0-9]*
+*.slf[0-9]*
+*.slt[0-9]*
+*.stc[0-9]*
+
+## Glossaries
+*.acn
+*.acr
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.lzo
+*.lzs
+
+## Uncomment this if you use the glossaries package and you want to ignore the glossary files:
+# *.ist
+
+## gnuplottex
+*-gnuplottex-*
+
+## gregoriotex
+*.gaux
+*.gtex
+
+## htlatex
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.trc
+*.xref
+
+## hyperref
+*.brf
+
+## knitr
+*-concordance.tex
+
+## listings
+*.lol
+
+## luatexja-ruby
+*.ltjruby
+
+## makeidx
+*.idx
+*.ilg
+*.ind
+
+## minitoc
+*.maf
+*.mlf
+*.mlt
+*.mtc[0-9]*
+
+## minted
+_minted*
+*.pyg
+
+## morewrites
+*.mw
+
+## nomencl
+*.nlg
+*.nlo
+*.nls
+
+## pax
+*.pax
+
+## pdfpcnotes
+*.pdfpc
+
+## sagetex
+*.sagetex.sage
+*.sagetex.py
+*.sagetex.scmd
+
+## scrwfile
+*.wrt
+
+## sympy
+*.SymPy
+
+## pdfcomment
+*.upa
+*.upb
+
+## pythontex
+*.pytxcode
+pythontex-files-*/
+
+## tcolorbox
+*.listing
+
+## thmtools
+*.loe
+
+## TikZ & PGF
+*.auxlock
+*.figlist
+*.makefile
+
+## todonotes
+*.tdo
+
+## vhistory
+*.hst
+*.ver
+
+## xindy
+*.xdy
+
+## xypic
+*.xyc
+
+## endfloat
+*.ttt
+*.fff
+
+## Latexian
+TSWLatexianTemp*
+
+## Editors:
+# WinEdt
+*.bak
+*.sav
+
+# Texpad
+.texpadtmp
+
+# LyX
+*.lyx~
+
+# Kile
+*.backup
+
+# gummi
+.*.swp
+
+# KBibTeX
+*~[0-9]*
+
+# TeXnicCenter
+*.tps
+
+# auto folder when using emacs and auctex
+./auto/*
+*.el
+
+# expex forward references with \gathertags
+*-tags.tex
+
+# standalone packages
+*.sta
+
+# Makeindex log files
+*.lpz
+
+# xwatermark package
+*.xwm
+
+# REVTeX puts footnotes in the bibliography by default, unless the nofootinbib
+# option is specified. Footnotes are the stored in a file with suffix Notes.bib.
+# Uncomment the next line to have this generated file ignored.
+#*Notes.bib
+
+## macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## Thumbnails
+._*
+
+## Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+## Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
