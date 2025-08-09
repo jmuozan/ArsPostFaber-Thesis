@@ -1,4 +1,4 @@
-## Core LaTeX auxiliary files
+# Core LaTeX auxiliary files
 *.aux
 *.lof
 *.log
@@ -12,12 +12,12 @@
 *.cb2
 .*.lb
 
-## Intermediate documents
+# Intermediate documents
 *.dvi
 *.xdv
 *-converted-to.*
 
-## Bibliography auxiliary files
+# Bibliography auxiliary files
 *.bbl
 *.bcf
 *.blg
@@ -25,7 +25,7 @@
 *-blx.bib
 *.run.xml
 
-## Build tool auxiliary files
+# Build tool auxiliary files
 *.fdb_latexmk
 *.synctex
 *.synctex(busy)
@@ -33,19 +33,19 @@
 *.synctex.gz(busy)
 *.pdfsync
 
-## Build tool directories for auxiliary files
+# Build tool directories for auxiliary files
 aux/
 fdb_latexmk/
 fls/
 
-## Latexmk
+# Latexmk
 *.fdb_latexmk
 *.figlist
 *.makefile
 *.upa
 *.upb
 
-## MiKTeX
+# MiKTeX
 *.maf
 *.mlf
 *.mlt
@@ -54,7 +54,7 @@ fls/
 *.slt[0-9]*
 *.stc[0-9]*
 
-## Glossaries
+# Glossaries
 *.acn
 *.acr
 *.glg
@@ -64,17 +64,17 @@ fls/
 *.lzo
 *.lzs
 
-## Uncomment this if you use the glossaries package and you want to ignore the glossary files:
+# Uncomment this if you use the glossaries package and you want to ignore the glossary files:
 # *.ist
 
-## gnuplottex
+# gnuplottex
 *-gnuplottex-*
 
-## gregoriotex
+# gregoriotex
 *.gaux
 *.gtex
 
-## htlatex
+# htlatex
 *.4ct
 *.4tc
 *.idv
@@ -82,98 +82,98 @@ fls/
 *.trc
 *.xref
 
-## hyperref
+# hyperref
 *.brf
 
-## knitr
+# knitr
 *-concordance.tex
 
-## listings
+# listings
 *.lol
 
-## luatexja-ruby
+# luatexja-ruby
 *.ltjruby
 
-## makeidx
+# makeidx
 *.idx
 *.ilg
 *.ind
 
-## minitoc
+# minitoc
 *.maf
 *.mlf
 *.mlt
 *.mtc[0-9]*
 
-## minted
+# minted
 _minted*
 *.pyg
 
-## morewrites
+# morewrites
 *.mw
 
-## nomencl
+# nomencl
 *.nlg
 *.nlo
 *.nls
 
-## pax
+# pax
 *.pax
 
-## pdfpcnotes
+# pdfpcnotes
 *.pdfpc
 
-## sagetex
+# sagetex
 *.sagetex.sage
 *.sagetex.py
 *.sagetex.scmd
 
-## scrwfile
+# scrwfile
 *.wrt
 
-## sympy
+# sympy
 *.SymPy
 
-## pdfcomment
+# pdfcomment
 *.upa
 *.upb
 
-## pythontex
+# pythontex
 *.pytxcode
 pythontex-files-*/
 
-## tcolorbox
+# tcolorbox
 *.listing
 
-## thmtools
+# thmtools
 *.loe
 
-## TikZ & PGF
+# TikZ & PGF
 *.auxlock
 *.figlist
 *.makefile
 
-## todonotes
+# todonotes
 *.tdo
 
-## vhistory
+# vhistory
 *.hst
 *.ver
 
-## xindy
+# xindy
 *.xdy
 
-## xypic
+# xypic
 *.xyc
 
-## endfloat
+# endfloat
 *.ttt
 *.fff
 
-## Latexian
+# Latexian
 TSWLatexianTemp*
 
-## Editors:
+# Editors:
 # WinEdt
 *.bak
 *.sav
@@ -217,15 +217,16 @@ TSWLatexianTemp*
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
 
-## macOS specific files
+# macOS
 .DS_Store
+.DS_Store?
 .AppleDouble
 .LSOverride
 
-## Thumbnails
+# Thumbnails
 ._*
 
-## Files that might appear in the root of a volume
+# Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -234,9 +235,22 @@ TSWLatexianTemp*
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-## Directories potentially created on remote AFP share
+# Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
