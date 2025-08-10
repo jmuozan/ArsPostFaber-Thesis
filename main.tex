@@ -1,13 +1,12 @@
 \documentclass[12pt,a4paper]{report}
 \input{preamble}
-
 \begin{document}
 \input{frontmatter/titlepage}
 \tableofcontents
 \listoffigures
 \listoftables
 
-% Use 'content/' instead of 'chapters/'
+% Your content sections
 \input{content/abstract}
 \input{content/introduction}
 \input{content/literature_review}
@@ -16,8 +15,9 @@
 \input{content/discussion}
 \input{content/conclusion}
 
-\bibliography{references}
+% Bibliography section
 \bibliographystyle{plain}
+\bibliography{references}
 
 \appendix
 \input{content/appendices}
