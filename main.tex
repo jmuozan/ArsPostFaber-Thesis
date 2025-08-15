@@ -1,13 +1,32 @@
 \documentclass[12pt,a4paper]{report}
 \input{preamble}
 \begin{document}
+
+% Title page
 \input{frontmatter/titlepage}
+
+% Start page numbering with roman numerals for front matter
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% Abstract on its own page (page i)
+\newpage
+\input{content/abstract}
+
+% Table of contents and lists
+\newpage
 \tableofcontents
+\newpage
 \listoffigures
+\newpage
 \listoftables
 
-% Your content sections
-\input{content/abstract}
+% Start main content with arabic numbering
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% Your main content sections
 \input{content/introduction}
 \input{content/literature_review}
 \input{content/methodology}
