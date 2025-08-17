@@ -1,6 +1,6 @@
 # Ars Post Faber
 
-##  Clone Repo
+## Clone Repo
 ```
 git clone https://github.com/jmuozan/ArsPostFaber-Thesis.git
 ```
@@ -10,7 +10,7 @@ git clone https://github.com/jmuozan/ArsPostFaber-Thesis.git
 latexmk -pvc main.tex
 ```
 
-##  Delete extra stuff when done
+## Delete extra stuff when done
 
 ```
 # Clean auxiliary files but keep the PDF
@@ -22,7 +22,7 @@ latexmk -C
 
 
 
-## If svg not working on latex convert to pdf
+##  If svg not working on latex convert to pdf
 
 ```
 # Logo directory
