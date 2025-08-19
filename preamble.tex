@@ -1,7 +1,6 @@
-% Add to your preamble.tex file:
+% Essential packages
 \usepackage{natbib}
 \usepackage[utf8]{inputenc}  
-% Essential packages
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -9,6 +8,12 @@
 \usepackage{amssymb}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
+
+% For Greek text support with XeLaTeX
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\newfontfamily\greekfont{Times New Roman}
+
 % Page layout
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{setspace}
@@ -23,6 +28,33 @@
 % For custom TOC formatting
 \usepackage{tocloft}
 
+% For section formatting
+\usepackage{titlesec}
+
+% Customize subsection formatting
+\titleformat{\section}[hang]
+  {\large\bfseries}  % Medium size (between chapter and subsection)
+  {\thesection}
+  {1em}
+  {}
+  []
+\titlespacing*{\section}
+  {0pt}     % left spacing
+  {14pt}    % space before
+  {7pt}     % space after
+
+% For subsections (1.1.1, 1.1.2, etc.) - smaller size
+\titleformat{\subsection}[hang]
+  {\normalsize\bfseries}  % Smaller than sections
+  {\thesubsection}
+  {1em}
+  {}
+  []
+\titlespacing*{\subsection}
+  {0pt}     % left spacing
+  {10pt}    % space before
+  {5pt}     % space after
+
 % For hyperlinks (load near the end)
 \usepackage{hyperref}
 
@@ -32,6 +64,9 @@
 % Set up header height
 \setlength{\headheight}{15pt}
 
+% Add space between footnotes and main text
+\addtolength{\skip\footins}{6pt}
+
 % Configure hyperref
 \hypersetup{
     colorlinks=true,
@@ -39,8 +74,8 @@
     filecolor=magenta,      
     urlcolor=blue,
     citecolor=black,
-    pdftitle={Your Thesis Title},
-    pdfauthor={Your Name}
+    pdftitle={Ars Post Faber},
+    pdfauthor={Jorge Muñoz Zanón}
 }
 
 % Custom command for consistent title formatting (matching abstract style)
@@ -71,36 +106,3 @@
 \renewcommand{\cftafterlottitle}{}
 \renewcommand{\cftbeforelottitleskip}{0pt}
 \renewcommand{\cftafterlottitleskip}{0pt}
-
-
-\addtolength{\skip\footins}{7pt}
-
-% Custom commands (add your own here)
-% \newcommand{\example}{Example text}
-
-% Customize section and subsection formatting
-\usepackage{titlesec}
-
-% For sections (1.1, 1.2, etc.) - medium size
-\titleformat{\section}[hang]
-  {\large\bfseries}  % Medium size (between chapter and subsection)
-  {\thesection}
-  {1em}
-  {}
-  []
-\titlespacing*{\section}
-  {0pt}     % left spacing
-  {14pt}    % space before
-  {7pt}     % space after
-
-% For subsections (1.1.1, 1.1.2, etc.) - smaller size
-\titleformat{\subsection}[hang]
-  {\normalsize\bfseries}  % Smaller than sections
-  {\thesubsection}
-  {1em}
-  {}
-  []
-\titlespacing*{\subsection}
-  {0pt}     % left spacing
-  {10pt}    % space before
-  {5pt}     % space after
