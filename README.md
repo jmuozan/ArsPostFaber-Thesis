@@ -10,8 +10,8 @@ git clone https://github.com/jmuozan/ArsPostFaber-Thesis.git
 latexmk -pvc main.tex
 ```
 
-## Delete extra stuff when done
 
+## Delete extra stuff when done
 ```
 # Clean auxiliary files but keep the PDF
 latexmk -c
