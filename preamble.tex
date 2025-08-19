@@ -72,5 +72,35 @@
 \renewcommand{\cftbeforelottitleskip}{0pt}
 \renewcommand{\cftafterlottitleskip}{0pt}
 
+
+\addtolength{\skip\footins}{7pt}
+
 % Custom commands (add your own here)
 % \newcommand{\example}{Example text}
+
+% Customize section and subsection formatting
+\usepackage{titlesec}
+
+% For sections (1.1, 1.2, etc.) - medium size
+\titleformat{\section}[hang]
+  {\large\bfseries}  % Medium size (between chapter and subsection)
+  {\thesection}
+  {1em}
+  {}
+  []
+\titlespacing*{\section}
+  {0pt}     % left spacing
+  {14pt}    % space before
+  {7pt}     % space after
+
+% For subsections (1.1.1, 1.1.2, etc.) - smaller size
+\titleformat{\subsection}[hang]
+  {\normalsize\bfseries}  % Smaller than sections
+  {\thesubsection}
+  {1em}
+  {}
+  []
+\titlespacing*{\subsection}
+  {0pt}     % left spacing
+  {10pt}    % space before
+  {5pt}     % space after
