@@ -34,3 +34,8 @@ inkscape iaac_logo.svg --export-pdf=iaac_logo.pdf
 # Convert Fab Lab BCN logo
 inkscape fablabbcn-logo.svg --export-pdf=fablabbcn-logo.pdf
 ```
+
+## Export to word (.docx)
+```
+pandoc main.tex -o output.docx
+```
