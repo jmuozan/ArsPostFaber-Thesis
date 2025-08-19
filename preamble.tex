@@ -20,6 +20,9 @@
 % For better lists
 \usepackage{enumitem}
 
+% For custom TOC formatting
+\usepackage{tocloft}
+
 % For hyperlinks (load near the end)
 \usepackage{hyperref}
 
@@ -39,6 +42,35 @@
     pdftitle={Your Thesis Title},
     pdfauthor={Your Name}
 }
+
+% Custom command for consistent title formatting (matching abstract style)
+\newcommand{\formattedtitle}[1]{%
+    \vspace{1cm}%
+    \noindent%
+    {\Large\textbf{#1}}%
+    \vspace{0.3cm}%
+    \hrule%
+    \vspace{0.8cm}%
+    \setlength{\parindent}{0pt}%
+}
+
+% Customize TOC title
+\renewcommand{\contentsname}{}
+\renewcommand{\cftaftertoctitle}{}
+\renewcommand{\cftbeforetoctitleskip}{0pt}
+\renewcommand{\cftaftertoctitleskip}{0pt}
+
+% Customize LOF title
+\renewcommand{\listfigurename}{}
+\renewcommand{\cftafterloftitle}{}
+\renewcommand{\cftbeforeloftitleskip}{0pt}
+\renewcommand{\cftafterloftitleskip}{0pt}
+
+% Customize LOT title
+\renewcommand{\listtablename}{}
+\renewcommand{\cftafterlottitle}{}
+\renewcommand{\cftbeforelottitleskip}{0pt}
+\renewcommand{\cftafterlottitleskip}{0pt}
 
 % Custom commands (add your own here)
 % \newcommand{\example}{Example text}
