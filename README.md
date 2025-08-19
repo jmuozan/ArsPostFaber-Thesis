@@ -22,7 +22,7 @@ latexmk -C
 
 
 
-##  If svg not working on latex convert to pdf
+## If svg not working on latex convert to pdf
 
 ```
 # Logo directory
