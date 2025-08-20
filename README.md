@@ -43,3 +43,20 @@ inkscape fablabbcn-logo.svg --export-pdf=fablabbcn-logo.pdf
 ```bash
 pandoc main.tex -o output.docx
 ```
+
+## Citation
+
+If you find this work helpful, please consider citing:
+
+```
+@mastersthesis{munozzanon2025,
+  title        = {Ars Post Faber: Digital Fabrication Democratization Through Embodied Knowledge Preservation},
+  author       = {Jorge Muñoz Zanón},
+  year         = 2025,
+  month        = {August},
+  address      = {Barcelona, Catalunya},
+  note         = {Available at \url{https://github.com/jmuozan/ArsPostFaber-Thesis}},
+  school       = {Institute for Advanced Architecture of Catalonia (IAAC)},
+  type         = {Master's thesis},
+}
+```

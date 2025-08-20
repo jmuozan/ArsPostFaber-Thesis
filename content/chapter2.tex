@@ -220,39 +220,21 @@ Even with the aforementioned problems with algorithmic approaches to craft prese
 
 The goal was to create a machine learning model capable of analyzing artisanal hand movements and providing real-time feedback on the correctness of performed actions, essentially functioning as a "digital master" for craft learning. By pushing algorithmic preservation to its technical limits, the experiment aimed to identify the specific dimensions of craft knowledge that resist computational capture, thereby informing alternative future approaches.
 
-
-
-
-
-
-
-
-
-
-
-
 \subsection{Technical Developement: Digitizing Embodied Knowledge}
 
-The AI.RTISANSHIP system made use of MediaPipe's holistic model to track 33 pose landmarks, 21 landmarks per hand, and facial features, generating 225-dimensional vectors for each frame of movement. The machine learning pipeline processed sequences of 30 frames (approximately one second of movement) through a three-layer bidirectional LSTM network with dropout regularization and L2 penalty terms to prevent overfitting.
+The AI.RTISANSHIP system made use of MediaPipe's holistic model to track 33 pose landmarks, 21 landmarks per hand, and facial features, generating 225-dimensional vectors for each frame of movement. The machine learning pipeline processed sequences of 30 frames (approximately one second of movement) through a three layer bidirectional LSTM network with dropout regularization and L2 penalty terms to prevent overfitting.
 
 \vspace{0.5cm}
 
-Data collection involved recording multiple pottery throwing sessions, manually labeling movements as "correct" or "incorrect," and training the neural network to recognize these patterns. The system achieved a considerable accuracy in distinguishing between predefined movement categories, successfully identifying differences between throwing techniques and providing real-time classification through a web interface.
+Data collection involved recording multiple pottery throwing sessions, manually labeling frame collections of movements as "correct" or "incorrect," and training the neural network to recognize these patterns in unseen views. The system achieved accuracy in distinguishing between predefined movement categories, successfully identifying differences between throwing techniques and providing real-time classification through a web interface.
 
 \vspace{0.5cm}
 
-However, the technical "success" highlighted fundamental conceptual problems that became apparent only through extended testing with the potters.
-
-
-
-
-
-
-
+However, this technical "success" started highlighting conceptual issues mentioned before that only became apparent through the extended testing with the potters.
 
 \subsection{The Unmeasurable Dimensions of Craft Knowledge}
 
-The experiment's conclusions revealed that craft knowledge operates through dimensions that systematically resist algorithmic capture. Computer vision could detect hand positions with great precision but remained blind to the tactile feedback that informed those positions, the subtle resistance of clay indicating proper centering, texture changes signaling optimal moisture content, or minute vibrations warning of impending collapse. These sensory channels, essential for skilled pottery practice, exist entirely outside the visual domain that computer vision systems can access.
+The experiment's conclusions revealed that craft knowledge operates through dimensions that resist algorithmic capture. Computer vision could detect hand positions with great precision but remained blind to the tactile feedback that informed those positions, the subtle resistance of clay indicating proper centering, texture changes signaling optimal moisture content, or minute vibrations warning of impending collapse. These sensory channels, essential for skilled pottery practice, exist entirely outside the visual domain that computer vision systems can access.
 
 \vspace{0.5cm}
 
