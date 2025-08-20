@@ -40,9 +40,31 @@
 \input{content/chapter4} 
 \input{content/chapter5} 
 
-% Bibliography section
+% Bibliography section with custom formatting
+\clearpage
+\addcontentsline{toc}{chapter}{Bibliography}
+
+% Set up page style for bibliography
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyhead[L]{\footnotesize\textit{Ars Post Faber: Digital Fabrication Democratization Through Embodied Knowledge Preservation}}
+\fancyfoot[C]{\thepage} % Page number in footer center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Custom bibliography title to match chapter formatting
+\noindent
+{\Large\textbf{Bibliography}}
+\vspace{0.3cm}
+\hrule
+\vspace{0.8cm}
+\setlength{\parindent}{0pt}
+
+% Generate bibliography with smaller text and no extra spacing
+{\small % Make bibliography text smaller
 \bibliographystyle{agsm}
 \bibliography{references}
+}
 
 \appendix
 \input{content/appendices}
