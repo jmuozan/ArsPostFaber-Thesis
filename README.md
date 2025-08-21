@@ -50,7 +50,9 @@ curl -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-
 pandoc main.tex -o output.docx \
   --citeproc \
   --bibliography=references.bib \
-  --extract-media=./media
+  --extract-media=./media \
+  --toc \
+  --toc-depth=2
 ```
 
 ## Citation
