@@ -1,0 +1,21 @@
+- Niedderer & Townsend (2024) https://www.academia.edu/123675851/Embodied_craft_practices
+- Taylor (1919) https://archive.org/details/principlesofscie00taylrich/page/n5/mode/2up
+- Richardson (2008) https://eh.net/encyclopedia/medieval-guilds/
+- Crane (1892) https://archive.org/details/claimsofdecorati00cran
+- Ruskin (1911) https://archive.org/details/stonesofvenice01rusk
+- Ruskin (1892) https://archive.org/details/natureofgothicch00rusk/page/n9/mode/2up
+- Morris (1996) https://www.thefreelibrary.com/William+Morris+-+art+and+idealism.-a018275725
+- Morris (1882) https://www.marxists.org/archive/morris/works/1882/life1.htm
+- Thomis (1993) https://annas-archive.org/md5/b4af8028be876b58dc15484a04ca3805
+- Byron (1812) https://unionsong.com/u771.html
+- Hatch (2013) https://www.raumschiff.org/wp-content/uploads/2017/08/0071821139-Maker-Movement-Manifesto-Sample-Chapter.pdf
+- Fab Foundation (2024) https://fabfoundation.org/ 
+- Mikhak et al. (2008) https://cba.mit.edu/events/03.05.fablab/fablab-dyd02.pdf
+- Tanenbaum et al. (2013) https://www.academia.edu/8093394/Democratizing_Technology_Pleasure_Utility_and_Expressiveness_in_DIY_and_Maker_Practice
+- Dahl (1989) https://scholarship.law.upenn.edu/cgi/viewcontent.cgi?article=2245&context=faculty_scholarship
+- Dahl (2017) https://www.amphilsoc.org/sites/default/files/2018-03/attachments/Dahl.pdf
+- Schumpeter (1950) https://archive.org/details/j.-schumpeter-capitalism-socialism-and-democracy
+- Pateman (1976) https://annas-archive.org/md5/3baf42f106bd928358cfe611d552c3eb
+- Tran O'Leary et al.'s (2024) https://dl.acm.org/doi/10.1145/3613904.3642751
+- Barbosa, A., Vale, I., & Alvarenga, D. (2024). The use of Tinkercad and 3D printing in interdisciplinary STEAM education: A focus on engineering design. STEM Education, 4(3), 222-246. doi: 10.3934/steme.2024014 https://www.researchgate.net/publication/381170021_The_use_of_Tinkercad_and_3D_printing_in_interdisciplinary_STEAM_education_A_focus_on_engineering_design
+- Smith & Iversen. (2016). Impediments to Digital Fabrication in Education: A Study of Teachers' Role in Digital Fabrication. DOI: 10.4018/978-1-5225-3417-4.ch017 https://www.researchgate.net/publication/303093020_Impediments_to_Digital_Fabrication_in_Education_A_Study_of_Teachers'_Role_in_Digital_Fabrication
