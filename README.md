@@ -38,10 +38,19 @@ inkscape iaac_logo.svg --export-pdf=iaac_logo.pdf
 inkscape fablabbcn-logo.svg --export-pdf=fablabbcn-logo.pdf
 ```
 
+## Download the CSL file
+```bash
+# Download Harvard CSL style
+curl -o harvard-cite-them-right.csl "https://www.zotero.org/styles/harvard-cite-them-right"
+```
+
 ## Export to word (.docx)
 
 ```bash
-pandoc main.tex -o output.docx
+pandoc main.tex -o output.docx \
+  --citeproc \
+  --bibliography=references.bib \
+  --extract-media=./media
 ```
 
 ## Citation
@@ -60,3 +69,10 @@ If you find this work helpful, please consider citing:
   type         = {Master's thesis},
 }
 ```
+
+
+<!--
+```bash
+pandoc main.tex -o output.docx
+```
+-->
