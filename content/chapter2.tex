@@ -31,36 +31,43 @@ Rather than addressing the organizational structures that fragment creative agen
 
 \section{The Access Paradigm and Its Achievements}
 
-This access-centered understanding of democratization has become the dominant paradigm within contemporary digital fabrication discourse. Neil Gershenfeld's\footnote{Neil Gershenfeld is a physicist at MIT who's the director of the Center for Bits and Atoms (CBA) and pioneered the global FabLab movement. His work focuses on the intersection of physical and digital systems, advocating for "personal fabrication" as a means to democratize access to manufacturing capabilities.} foundational vision for FabLabs\footnote{FabLabs (Fabrication Laboratories) are digital fabrication workshops that provide public access to tools for invention, prototyping and local production. Originally conceived at MIT's Center for Bits and Atoms, FabLabs follow a global charter emphasizing open access, education, and local innovation while connecting to a worldwide network of collaborative spaces.} promised "personal fabrication" enabling "almost anyone to make almost anything" \citep{gershenfeld2007}, positioning digital fabrication as the natural evolution of personal computing—bringing the same accessibility that desktop computers brought to information processing into the realm of physical manufacturing. This vision emphasized scaling down industrial production capabilities to individual users, making sophisticated fabrication tools available in community workshops and educational institutions.
+This access-centered understanding of democratization has become the dominant paradigm within contemporary digital fabrication discourse. Neil Gershenfeld's\footnote{Neil Gershenfeld is a physicist at MIT who's the director of the Center for Bits and Atoms (CBA) and pioneered the global FabLab movement. His work focuses on the intersection of physical and digital systems, advocating for "personal fabrication" as a means to democratize access to manufacturing capabilities.} vision for FabLabs\footnote{FabLabs (Fabrication Laboratories) are digital fabrication workshops that provide public access to tools for invention, prototyping and local production. Originally conceived at MIT's Center for Bits and Atoms, FabLabs follow a global charter emphasizing open access, education, and local innovation while connecting to a worldwide network of collaborative spaces.} promised "personal fabrication" enabling "almost anyone to make almost anything" \citep{gershenfeld2007}, positioning digital fabrication as the natural evolution of personal computing—bringing the same accessibility that desktop computers brought to information processing into the realm of physical manufacturing. This vision emphasized scaling down industrial production capabilities to individual users, making sophisticated fabrication tools available in community workshops and educational institutions.
 
-\vspace{0.5cm}
-
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/chapter2/fablab_tools.jpg}
-\caption{Tools in a Fab Lab. Source: Fab Foundation, 2024}
+\includegraphics[width=0.4\textwidth]{figures/chapter2/fablab.png}
+\caption{Fab Labs Logo. Source: \cite{fabfoundation2024}}
 \label{fig:fablab_tools}
 \end{figure}
 
 Building on this foundation, the broader maker movement, as articulated by Mark Hatch, advocated for "radically democratizing access to the tools of innovation" \citep{hatch2013}, framing making as both a form of personal empowerment and economic opportunity. Hatch's manifesto positioned the maker movement as a response to mass production's alienation, promising that widespread access to fabrication tools would restore individual agency in production while fostering innovation and entrepreneurship at the grassroots level.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/fablab_tools.jpg}
+\caption{Tools in a Fab Lab. Source: \cite{fabfoundation2024}}
+\label{fig:fablab_tools}
+\end{figure}
 
 This approach has achieved remarkable quantitative success: from fewer than 50 FabLabs worldwide in 2009 to over 2,000 by 2023 \citep{fabfoundation2024}, there's been an unprecedented expansion of access to sophisticated production capabilities.
 
-\vspace{0.5cm}
-
-
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{figures/chapter2/fablabsmap.png}
-\caption{Global distribution of FabLabs. Map showing the locations of FabLabs around the world. Source: Fab Foundation, 2024}
+\caption{Global distribution of FabLabs. Map showing the locations of FabLabs around the world. Source: \cite{fabfoundation2024}}
 \label{fig:fablabs_map}
 \end{figure}
 
 This democratization of digital fabrication extends beyond physical tools to software infrastructures. Open-source\footnote{Open-source software is developed with publicly accessible source code, allowing users to modify, improve the software and in some cases even distribute it.} and free CAD alternatives like FreeCAD\footnote{FreeCAD is a parametric 3D CAD modeler designed for mechanical engineering and product design, available as free and open-source software.}, Blender\footnote{Blender is an Open-Source 3D creation suite supporting modeling, animation, rendering, and video editing, mainly used for animation but increasingly used for CAD applications.} or TinkerCAD\footnote{TinkerCAD is a web-based 3D design application developed by Autodesk, designed for beginners with simplified modeling tools and browser-based accessibility.} combined with educational programs to know how to use the tools, have reduced barriers to digital design literacy. Contemporary maker spaces enable individual access to CNC machines\footnote{Computer Numerical Control (CNC) machines use computer-controlled cutting tools to precisely shape materials like wood, metal, and plastic from digital designs.}, 3D printers\footnote{3D printers create physical objects by depositing material layer by layer based on digital 3D models, enabling rapid prototyping and small-scale production.}, and laser cutters\footnote{Laser cutters use focused laser beams to cut or engrave materials with high precision, commonly used for creating flat parts from sheet materials like wood, acrylic, and metal.} for modest fees (sometimes even for free), genuinely transforming the economic conditions of making.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.4cm]{figures/chapter2/Blender.png}
+\hspace{1.5cm}
+\includegraphics[height=4.8cm]{figures/chapter2/freeCAD.png}
+\caption{Open-source CAD alternatives: Blender and FreeCAD logos. Sources: \citet{blender2024}, \citet{freecad2024}}
+\label{fig:opensource_cad_logos}
+\end{figure}
 
 Yet this access-focused paradigm highlights certain limitations when examined against historical precedents of successful democratization movements. The expansion of who can use fabrication tools does not address how those tools structure agency within making processes. As Tanenbaum et al. observe, maker practices still depend heavily on existing industrial infrastructure and face challenges "when it comes to scaling up production and distribution" \citep{tanenbaum2013}.
 
@@ -76,7 +83,12 @@ Richard Sennett's analysis of craftsmanship emphasizes that "the desire to do so
 
 Contemporary digital fabrication workflows eliminate opportunities for this knowledge transmission. While FabLabs and maker spaces provide access to sophisticated tools, they typically operate through standardized tutorials and predetermined project sequences that prioritize rapid skill acquisition over deep material understanding. The emphasis on "democratizing" access often translates into simplifying workflows to reduce learning curves, eliminating the complex, time-intensive processes through which tacit knowledge traditionally develops.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/3d_Printer.png}
+\caption{3D Printer at Fab Lab Bcn. Source: Author}
+\label{fig:fablabs_map}
+\end{figure}
 
 This preservation problem manifests through persistent organizational structures that extend beyond individual tool use. Despite the collaborative and educational dimensions of maker spaces, the workflow architecture maintains the distributed agency pattern traced in Chapter 1. Creative decisions remain concentrated in separate design phases, while material execution follows predetermined procedures that eliminate opportunities for the responsive adaptation. The result is a democratization that provides access to tools without preserving the knowledge systems that enable those tools to support genuine creative agency.
 
@@ -88,11 +100,16 @@ The insight that emerges from this analysis is that democratization cannot be ac
 
 Through the analysis of the preservation problem it's possible to raise the question about how "democratization" has been conceptualized within digital fabrication discourse. While the term implies expanding democratic participation, current approaches, as mentioned, focus primarily on access expansion rather than examining what democratic participation actually requires. Before proposing alternative models for fabrication democratization, it becomes necessary to question what "democracy" itself demands and how those requirements might apply to making contexts.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/The_House_of_Commons_1793-94.jpg}
+\caption{William Pitt the Younger addressing the Commons in \textit{The House of Commons, 1793–94}. Source: \citet{hickel_commons_1794}}
+\label{fig:house_of_commons_1794}
+\end{figure}
 
 The analysis of different precedents and patterns suggest that democratization movements across multiple domains initially focus on access expansion before recognizing deeper structural challenges. Political democratization, educational reform, and cultural preservation movements all showcase patterns that would align with it: early phases emphasize expanding participation within existing systems, while later phases require fundamental transformation of the systems themselves. For instance, political democratization initially focused on expanding voting rights, but later required systematic changes like proportional representation systems such as the D'Hondt method\footnote{The D'Hondt method is a proportional representation electoral system that allocates seats based on vote share, developed to ensure more democratic representation beyond simple majority voting.} to ensure genuine democratic representation rather than mere voting access. Similarly, educational democratization moved beyond simply expanding school enrollment to developing pedagogical approaches that understand and accommodate diversity in the classroom, adapting curricula to different learning styles and cultural backgrounds rather than imposing standardized approaches. These precedents suggest that fabrication democratization may be encountering similar limitations inherent to access-based approaches.
 
-\vspace{0.5cm} 
+\vspace{0.5cm}
 
 Rather than assuming that broader tool access automatically produces democratic participation, the following analysis will examine what democracy actually requires and how those requirements might inform alternative approaches to fabrication democratization. By analyzing democratic theory alongside cross-cultural preservation practices, this chapter will attempt to develop frameworks for distinguishing between superficial access and substantive democratic participation in production processes.
 
@@ -100,7 +117,12 @@ Rather than assuming that broader tool access automatically produces democratic 
 
 The theoretical framework established requires a deeper examination of the term "democratization" itself and its specific application to fabrication contexts. While democratic theory provides extensive analysis of political participation, its principles have been applied to fabrication with insufficient critical examination of what democratic participation might actually require within making processes. The word "democracy" derives from the Greek {\greekfont δημοκρατία} (demokratia) demos (people) + kratos (power/rule), meaning rule by the people. This etymology suggests that democratization involves the distribution of ruling authority rather than expanded access to predetermined systems, a distinction with big implications for how fabrication democratization should be conceptualized.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/Discurso_funebre_pericles.png}
+\caption{Nineteenth-century painting by Philipp Foltz depicting the Athenian politician Pericles delivering his famous funeral oration in front of the Assembly. Source: \citet{foltz_pericles}}
+\label{fig:pericles_funeral_oration}
+\end{figure}
 
 Political democracy, at its core, requires the distribution of decision-making authority among participants rather than merely access to predetermined decision-making processes. As Robert Dahl's\footnote{Robert A. Dahl (1915--2014) was an American political theorist whose work on democratic theory, shaped contemporary understanding of democratic systems and citizen engagement.} foundational analysis demonstrates, democratic systems must provide "effective participation" \citep{coglianese1990} where citizens have "basic political rights and liberties, such as free expression, and allows persons to live under laws of their own choosing" \citep{coglianese1990}, and enlightened understanding enabling informed choice among alternatives. Crucially, democracy requires what Dahl terms "final control over the agenda" \citep{mayhew2017}, the authority to determine not just outcomes within predetermined options, but the capacity to define what questions get asked and how they are framed. Distinguishing genuine democratic participation from consultative processes that solicit input within predetermined parameters while concentrating agenda-setting authority elsewhere.
 
@@ -140,7 +162,14 @@ Understanding preservation through cross-cultural perspectives can reveal assump
 
 Traditional cultural preservation models, developed primarily for archaeological, crafts, and architectural contexts, emphasize conservation of existing artifacts and documentation of historical practices. This approach, rooted in western "museum culture", treats cultural objects as fixed entities requiring protection from change rather than as elements within ongoing living traditions that respond to new conditions and challenges.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[height=9cm]{figures/chapter2/michelangelo_figure6.png}
+\hspace{0.01cm}
+\includegraphics[height=9cm]{figures/chapter2/michelangelo_figure9.png}
+\caption{Image 1: The Cyberware gantry standing next to Michelangelo's David / Image 2: Computer rendering of Michelangelo's St. Matthew showing preserved chisel marks at 0.29mm resolution. Source: \citet{levoy2000}}
+\label{fig:michelangelo_gantry}
+\end{figure}
 
 The 2003 UNESCO Convention for the Safeguarding of Intangible Cultural Heritage marked a shift in this perspective by recognizing that cultural heritage extends beyond tangible things to include "identification, documentation, research, preservation, protection, promotion, enhancement, transmission" \citep{unesco2003}. More importantly, the convention defines intangible cultural heritage as something that is "constantly recreated by communities and groups in response to their environment" \citep{unesco2003}, explicitly acknowledging its living, evolving nature.
 
@@ -156,11 +185,23 @@ The static documentation approaches critiqued highly contrast with preservation 
 
 Cuba's preservation of classic American automobiles exemplifies a functional preservation, the maintainance of cultural significance through continuous adaptation oposed to static conservation. Following the 1959 Cuban Revolution and subsequent U.S. embargo, Cubans maintained an estimated 60,000 classic American cars through creative adaptation. As the \citet{diplomatictimes2019} reports, "About half of the cars originate from the 1950s, while 25 percent are from the 1940s and another 25 percent are from the 1930s. A lot of them have been passed down from generation to generation, along with the mechanical genius."
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[height=5.6cm]{figures/chapter2/castro1.jpg}
+\hspace{0.01cm}
+\includegraphics[height=5.6cm]{figures/chapter2/castro2.jpg}
+\caption{Fidel Castro during the Cuban Revolution period, demonstrating the historical context that led to Cuba's unique preservation practices. Source: \citet{castro_time_photos}}
+\label{fig:castro_revolution}
+\end{figure}
 
 These vehicles remain culturally significant not despite their modifications but because of them. Their external appearancespreserve historical recognition value while their internal systems have evolved into hybrid assemblages. "A common substitution on the old 1950s era cars on the island are diesel engines for the old straight-six or V-8 engines originally in the cars, due to diesel's lower cost on the island, and the better fuel efficiency of the engines," \citep{diplomatictimes2019} with "diesel engines from Russian trucks or boats" \citep{diplomatictimes2019} replacing original components.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/vintage_autos_havana.jpeg}
+\caption{Vintage 1950s American cars in Havana, Cuba, demonstrating functional preservation through continuous adaptation. Source: \citet{zerobyte2018}}
+\label{fig:vintage_cars_havana}
+\end{figure}
 
 This preservation approach prioritizesthe ongoing functionality and cultural continuity over "strict" tangible authenticity. The cars remain integrated within contemporary Cuban life, functioning as taxis and tourist attractions rather than museum pieces, showcasing preservation through active use rather than protection from use. As \citet{adewale2024} observes, "While some people might expect these old cars to be museum pieces, they're part of everyday life in Cuba."
 
@@ -168,7 +209,12 @@ This preservation approach prioritizesthe ongoing functionality and cultural con
 
 New Zealand's legal recognition of the Whanganui River as a living entity with "the same rights and responsibilities as a person" \citep{paremata2017} exemplifies preservation through transformed conceptual frameworks rather than material conservation. This approach emerged from Māori understanding expressed in the saying "Ko au te awa, ko te awa ko au" (I am the river, and the river is me), where the river name "Awa Tupua" includes "the whole river system, its spirit, and the people that are related to it" \citep{nationallibrarynz2017}.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter2/whanganui.jpg}
+\caption{River flowing through the Whanganui National Park. The Whanganui River was granted legal personhood in 2017, exemplifying relational preservation approaches that maintain living connections rather than static conservation. Source: \citet{paremata2017}}
+\label{fig:whanganui_river}
+\end{figure}
 
 Rather than treating the river as a natural resource requiring protection through regulatory restriction, this model empowers the Māori to manage and protect the river based on their traditional ecological knowledge. As \citet{vijaykuma2019} notes, "As a consequence of this recognition, the Maori are now empowered to manage and protect the river based on their traditional ecological knowledge." Preservation here operates through maintaining relationships and ongoing interactions rather than controlling physical attributes or preventing change.
 
@@ -258,6 +304,8 @@ The attempt to extract explicit rules from embodied practices assumes that skill
 \vspace{0.5cm}
 
 Out of these findings, it is possible to suggest that effective craft preservation cannot operate through documentation technologies that abstract away material context and environmental variation.
+
+\vspace{0.5cm}
 
 Effective preservation, would need to maintain the conditions for adaptive response rather than understanding standardized procedures. Representing a shift from traditional documentation based approaches towards a preservation method that maintain the organizational structures only, enabeling ongoing creative adaptation.
 

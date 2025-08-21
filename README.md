@@ -55,6 +55,27 @@ pandoc main.tex -o output.docx \
   --toc-depth=2
 ```
 
+## Finding big files before pushing :))))
+
+```bash
+find . -type f -size +25M -exec ls -lh {} \;
+```
+
+## Pushing everything except big files 
+
+```bash
+# Adding all files
+git add .
+
+# Removing specific files from staging
+git reset HEAD specific-file.txt
+git reset HEAD another-file.log
+
+# Commiting and pushing
+git commit -m "Your commit message"
+git push
+```
+
 ## Citation
 
 If you find this work helpful, please consider citing:
