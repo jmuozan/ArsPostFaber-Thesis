@@ -55,6 +55,25 @@ pandoc main.tex -o output.docx \
   --toc-depth=2
 ```
 
+## PDF Compression
+
+```bash
+# High compression (smallest file)
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook \
+   -dNOPAUSE -dQUIET -dBATCH -sOutputFile=main_compressed.pdf main.pdf
+
+# Medium compression (good balance)
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer \
+   -dNOPAUSE -dQUIET -dBATCH -sOutputFile=main_compressed.pdf main.pdf
+
+# Custom compression with specific image quality
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress \
+   -dColorImageResolution=150 -dGrayImageResolution=150 \
+   -dMonoImageResolution=300 -dColorImageDownsampleType=/Bicubic \
+   -dGrayImageDownsampleType=/Bicubic -dMonoImageDownsampleType=/Bicubic \
+   -dNOPAUSE -dQUIET -dBATCH -sOutputFile=main_compressed.pdf main.pdf
+```
+
 ## Finding big files before pushing :))))
 
 ```bash
