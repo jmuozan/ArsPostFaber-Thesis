@@ -34,43 +34,171 @@ The theoretical framework developed in the previous chapters culminates in a pra
 
 \vspace{0.5cm}
 
-Drawing from the experimental insights gathered through \textit{CR3ATED}, \textit{AI Tools}, and the \textit{Component that Makes}, \textit{Ars Post Faber} represents an integrated approach to preserving embodied knowledge within digital fabrication contexts. Rather than simplifying tools to increase accessibility or automating processes to eliminate complexity, the plugin introduces new forms of interaction that maintain computational capabilities while enabling the adaptive authority of the user.
+Drawing from the experimental insights gathered through \textit{CR3ATED}, \textit{AI Tools}, and the \textit{Component that Makes}, \textit{Ars Post Faber} represents an integrated approach to preserving embodied knowledge within digital design and fabrication contexts. Rather than simplifying tools to increase accessibility or automating processes to eliminate complexity, the plugin introduces new forms of interaction that maintain the computational sophistication while enabling the adaptive authority of skilled practice.
 
 \vspace{0.5cm}
 
-The name \textit{Ars Post Faber} deliberately references both craft traditions and contemporary technological possibilities. \textit{Ars}, from the Latin meaning skill or craft, acknowledges the continuity with traditional making practices that this research seeks to preserve. \textit{Post Faber}, meaning "after the maker," suggests not the elimination of human creative agency but its transformation within digitally-mediated contexts. This represents neither a nostalgic return to pre-industrial craft nor a wholesale embrace of automated production, but how contemporary computational capabilities might support rather than replace the adaptive decision-making that enables skilled making.
+The name \textit{Ars Post Faber} deliberately references both historical craft traditions and contemporary technological possibilities. \textit{Ars}, from the Latin meaning skill or craft, acknowledges the continuity with traditional making practices that this research seeks to preserve. \textit{Post Faber}, meaning "after the maker," suggests not the elimination of human creative agency but its transformation within digitally-mediated contexts. This represents neither a nostalgic return to pre-industrial craft nor a wholesale embrace of automated production, but rather an exploration of how contemporary computational capabilities might support the adaptive decision-making that enables skilled making.
 
 \section{Design Principles: From Theory to Implementation}
 
-The development of \textit{Ars Post Faber} required translating the theoretical insights about unified agency, preservation-based democratization, and adaptive authority into specific design principles that could guide software implementation. This translation process challenged the maintainance of theoretical coherence while addressing the practical constraints and opportunities present within existing CAD environments.
+The development of \textit{Ars Post Faber} required translating the theoretical insights about unified agency, preservation-based democratization, and adaptive authority into specific design principles that could guide software implementation. This translation process presented the challenge of maintaining theoretical coherence while addressing the practical constraints and opportunities present within existing CAD environments.
 
 \subsection{Preserving Process Over Product}
 
-Traditional CAD workflows prioritize the efficient production of geometric specifications suitable for manufacturing, treating the design process itself as expendable scaffolding that can be discarded once final specifications are determined. This product-centered approach aligns with the distributed agency model that concentrates creative authority within separate design phases while rendering material execution increasingly automated and non-responsive.
+As explored along this work, traditional CAD workflows prioritize the efficient production of geometric specifications suitable for manufacturing, treating the design process itself as expendable scaffolding that can be discarded once final specifications are determined. This product-centered approach aligned with the model of distributed agency, concentrates creative authority within separate design phases.
 
 \vspace{0.5cm}
 
-\textit{Ars Post Faber} inverts this priority by treating the creative process as equally important to the final geometric outcome. Rather than optimizing for efficient specification delivery, the plugin preserves the complete narrative of design development, including iterations, modifications, decision points, and even errors that contributed to the final result. This process preservation enables future makers to understand not just what was created, but how and why creative decisions emerged through the making dialogue.
+\textit{Ars Post Faber} looks to invert this priority by treating the creative process as equally important to the final geometric outcome. Rather than optimizing for efficient specification delivery, the plugin preserves the complete narrative of design development, including iterations, modifications, decision points, and even errors that contributed to the final result. This process preservation enables future makers to understand not just what was created, but how and why creative decisions emerged through the making dialogue, reflecting the preservation principles identified in Chapter 2's, where continuity of relationship and adaptive capacity took precedence over material authenticity. By maintaining the complete creative narrative, \textit{Ars Post Faber} enables a \textit{generative reproduction}, where future implementations can build upon previous work while adapting to new contexts rather than simply replicating predetermined specifications.
+
+\section{Unclosed Workflows: Live Connection as Creative Methodology}
+
+The most important addition within \textit{Ars Post Faber} lies not in individual features but in its approach to workflow continuity. Where traditional CAD/CAM systems create discrete operational phases that fragment creative authority, the plugin implements what this research terms \textit{unclosed workflows} - processes that maintain live connections between digital design, physical fabrication, and human decision-making throughout the entire making cycle.
 
 \vspace{0.5cm}
 
-By maintaining the complete creative narrative, \textit{Ars Post Faber} enables what might be termed \textit{generative reproduction}, where future implementations or attempts to replicate can build upon previous work while adapting to new contexts.
+These unclosed workflows challenge the assumption that digital fabrication requires predetermined specifications locked in before material execution begins. Instead, they preserve the capacity for real-time modification, contextual adaptation, and responsive intervention that characterizes traditional craft practice while leveraging contemporary computational capabilities.
 
-\section{From Theory to Implementation: Design Philosophy}
+\subsection{Live Serial Control: Redefining the Human-Machine Interface}
 
-The transition from theoretical analysis to practical implementation required confronting a fundamental paradox: how to create sophisticated computational tools while preserving the adaptive authority and embodied decision-making that enable makers to maintain creative control throughout the fabrication process. Rather than developing another standalone application with predetermined functionality, \textit{Ars Post Faber} operates as an extension to existing professional CAD environments, specifically Grasshopper within Rhinoceros 3D.
+The Serial Control component represents a departure from conventional G-code streaming approaches by implementing live editing capabilities during fabrication. Rather than treating G-code as a static sequence of predetermined commands, the component enables makers to modify, pause, and adapt fabrication instructions in real-time response to material conditions, unexpected discoveries, or emerging creative insights.
 
 \vspace{0.5cm}
 
-This strategic decision leverages the computational sophistication needed for complex creative processes while introducing more human-centered approaches to interaction. By working within established professional environments, \textit{Ars Post Faber} can maintain the representational sophistication necessary for advanced fabrication while introducing alternative interaction paradigms that support rather than replace existing craft knowledge.
+This live connection transforms the relationship between digital design and physical execution from a one-way translation process into a continuous dialogue. The maker maintains agency throughout fabrication, able to observe material feedback, assess emergent conditions, and modify subsequent actions accordingly. The preview editor enables visual manipulation of upcoming toolpaths, while the serial connection preserves the ability to pause, modify, and resume fabrication without losing the creative thread.
+
+\vspace{0.5cm}
+
+More importantly, this approach acknowledges that fabrication is inherently experimental. Even with sophisticated simulation and planning, material reality introduces variables that cannot be fully predicted in digital space. By maintaining live connection and editing capabilities, the workflow preserves the maker's capacity to respond adaptively to these emergent conditions rather than forcing predetermined execution regardless of circumstances.
+
+\subsection{Iterative Slicing: Real-Time Adaptation to Material Reality}
+
+The Slicer components extend this live connection principle into the realm of additive manufacturing through real-time path generation and modification. Rather than pre-calculating entire toolpaths before fabrication begins, the system enables iterative slicing where each layer can be generated, modified, and optimized based on feedback from previous layers.
+
+\vspace{0.5cm}
+
+This approach recognizes that additive manufacturing is fundamentally a cumulative process where each layer affects subsequent possibilities. Material shrinkage, thermal effects, support requirements, and surface quality all emerge through the printing process itself rather than being fully predictable in advance. By enabling real-time modification of slicing parameters, infill patterns, and toolpath strategies, the workflow preserves the maker's capacity to adapt fabrication strategies based on observed results.
+
+\vspace{0.5cm}
+
+The live editing capabilities within the slicer workflow enable what might be termed \textit{responsive manufacturing}, where fabrication strategies evolve in dialogue with material feedback rather than following predetermined algorithms. This represents a fundamental shift from automation towards augmentation, where computational capabilities amplify rather than replace human adaptive decision-making.
+
+\section{Embodied Interaction: Beyond Traditional Input Paradigms}
+
+\textit{Ars Post Faber} extends the concept of unclosed workflows into new forms of human-computer interaction that attempt to preserve embodied knowledge within digital contexts. These interactions challenge the assumption that digital design requires adaptation to predetermined interface logic, instead enabling more direct translation of embodied understanding into computational action.
+
+\subsection{Gesture-Based Design Through MediaPipe Integration}
+
+The MediaPipe hand tracking implementation represents an exploration of how embodied gestures might serve as direct input for digital design processes. Rather than requiring makers to translate spatial intuition through mouse movements and keyboard commands, the system enables direct manipulation of digital geometry through hand movements tracked in real-time.
+
+\vspace{0.5cm}
+
+This approach recognizes that traditional craft knowledge is fundamentally embodied, residing in the hands, eyes, and kinesthetic understanding of materials and tools. By enabling gesture-based interaction, the system attempts to preserve these embodied ways of knowing rather than requiring their translation through abstract interface protocols.
+
+\vspace{0.5cm}
+
+The gesture recognition system enables makers to sculpt, modify, and manipulate digital geometry through hand movements that correspond to traditional craft gestures. Pinching motions can select and move elements, spreading gestures can scale objects, and rotation movements can orient components in three-dimensional space. These interactions maintain the spatial and tactile dimensions of traditional making while leveraging computational precision and reproducibility.
+
+\vspace{0.5cm}
+
+More significantly, gesture-based interaction enables real-time collaboration between digital design and physical making. Makers can manipulate digital models while simultaneously working with physical materials, using gesture control to adapt digital specifications based on immediate material feedback. This creates a seamless workflow where digital and physical making inform each other continuously rather than operating in separate domains.
+
+\subsection{Mesh Editing as Spatial Dialogue}
+
+The mesh editing capabilities within the preview system extend embodied interaction into three-dimensional spatial manipulation. Rather than requiring geometric modification through parametric controls or numerical input, the system enables direct manipulation of form through spatial gestures that correspond to traditional sculptural practices.
+
+\vspace{0.5cm}
+
+This approach acknowledges that much craft knowledge operates through spatial intuition rather than mathematical precision. By enabling direct manipulation of mesh geometry, the system preserves the maker's capacity to work through spatial relationships, proportion, and formal development without requiring translation through abstract parametric systems.
+
+\vspace{0.5cm}
+
+The mesh editing interface supports both traditional mouse-based interaction and gesture-based control, enabling makers to choose interaction modes that correspond to their individual working methods and the specific demands of each creative task. This flexibility preserves multiple ways of knowing rather than imposing singular interface paradigms.
+
+\section{Bridging Physical and Digital: Photogrammetry as Creative Tool}
+
+Perhaps the most significant breakthrough in \textit{Ars Post Faber}'s approach to unclosed workflows lies in its integration of photogrammetry as a creative rather than merely documentary tool. This represents a fundamental reconceptualization of the relationship between physical and digital making, treating the boundary between atoms and bits as permeable rather than absolute.
+
+\subsection{From Documentation to Creation}
+
+Traditional photogrammetry applications focus on accurate documentation of existing objects or spaces, treating the physical world as a source of data to be captured and digitized. \textit{Ars Post Faber} inverts this relationship by treating photogrammetry as a creative tool that enables continuous dialogue between physical and digital making processes.
+
+\vspace{0.5cm}
+
+The photogrammetry component enables makers to capture physical work in progress, translate it into editable digital geometry, modify and develop it through computational tools, and then return to physical making with enhanced understanding and expanded possibilities. This creates a circular workflow where physical and digital making inform each other continuously rather than operating in discrete phases.
+
+\vspace{0.5cm}
+
+This approach recognizes that physical making often generates insights, discoveries, and formal developments that would be difficult or impossible to achieve through purely digital means. By enabling rapid translation from physical to digital contexts, the workflow preserves these emergent discoveries while enabling their further development through computational capabilities.
+
+\subsection{Real-Time Translation Between Domains}
+
+The mobile-friendly photogrammetry interface enables real-time capture and processing, reducing the temporal gap between physical making and digital development. Makers can capture physical work, receive processed digital models, and continue development within minutes rather than hours or days.
+
+\vspace{0.5cm}
+
+This temporal compression is crucial for maintaining creative continuity. Traditional photogrammetry workflows often introduce delays that disrupt the creative flow, forcing makers to work within separate physical and digital sessions. By enabling rapid translation between domains, \textit{Ars Post Faber} preserves the possibility for continuous creative development across physical and digital contexts.
+
+\vspace{0.5cm}
+
+The real-time translation capabilities enable new forms of hybrid making where physical and digital tools are used simultaneously rather than sequentially. Makers can begin with physical materials, capture and digitize intermediate results, develop them further through computational tools, and return to physical making with enhanced understanding and expanded formal possibilities.
+
+\section{Dissolving the Physical-Digital Boundary}
+
+The integration of live serial control, gesture-based interaction, and real-time photogrammetry within \textit{Ars Post Faber} represents more than the sum of individual features. Together, these capabilities enable what might be termed \textit{domain-fluid making}, where the boundary between physical and digital work becomes increasingly permeable and ultimately irrelevant to the creative process.
+
+\vspace{0.5cm}
+
+This dissolution of boundaries reflects the research's broader argument that genuine fabrication democratization requires preserving the continuity of creative decision-making rather than simply expanding access to predetermined tools. By enabling fluid translation between physical and digital domains, \textit{Ars Post Faber} preserves the maker's capacity to work across all available creative resources rather than being constrained by technological boundaries.
+
+\vspace{0.5cm}
+
+The unclosed workflow approach challenges fundamental assumptions about how digital fabrication must operate. Rather than accepting the distributed agency model that fragments creative authority across discrete operational phases, the plugin demonstrates that contemporary computational capabilities can support unified agency where creative control remains responsive to material conditions throughout the entire making process.
+
+\vspace{0.5cm}
+
+This represents neither a rejection of computational precision nor a nostalgic return to purely manual methods, but rather an exploration of how digital and physical capabilities might be integrated to support rather than constrain human creative agency. The result is a fabrication environment that leverages the best aspects of both computational and material making while preserving the adaptive authority that enables skilled practice to emerge and evolve.
+
+\section{Technical Implementation Strategy}
 
 \subsection{Open Source Foundation and Community Authority}
 
-\textit{Ars Post Faber} is released under the MIT License, representing a commitment to genuine democratization through community control over technological development rather than concentrating it within proprietary systems. This licensing approach enables users to use, modify, distribute, and create derivative works without restriction, integrating components into larger fabrication workflows while maintaining the authority to adapt tools to evolving creative needs.
+\textit{Ars Post Faber} is released under the MIT License, representing a commitment to genuine democratization through community control over technological development rather than concentrating it within proprietary systems. The MIT License text explicitly defines the parameters of this collaborative approach:
 
 \vspace{0.5cm}
 
-The open source model empowers makers to continuously build upon and expand the software, reflecting the community-controlled evolution that characterizes living preservation traditions. Rather than locking fabrication capabilities within proprietary systems that require expert mediation, this approach enables makers to adapt, extend, and share improvements that reflect their evolving creative contexts.
+\begin{verbatim}
+MIT License
+
+Copyright (c) 2025 Jorge Muñoz Zanón
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+\end{verbatim}
+
+\vspace{0.5cm}
+
+This licensing framework empowers makers to build upon each other's work in ways that create new expressions of creative agency. Unlike proprietary systems that require users to adapt their practices to predetermined software logic, the open source model enables the software itself to evolve in response to diverse making practices and cultural contexts. Makers can fork the codebase to develop specialized versions for particular fabrication techniques, contribute improvements that benefit the broader community, or integrate components into entirely new workflows that reflect their unique creative approaches.
+
+\vspace{0.5cm}
+
+The collaborative development model inherent in open source software mirrors the guild-like knowledge sharing that characterized pre-industrial craft communities. However, rather than being constrained by geographic proximity or trade boundaries, digital collaboration enables global communities of makers to collectively develop fabrication tools that preserve and extend traditional craft knowledge while leveraging contemporary computational capabilities. This represents a form of \textit{distributed craft intelligence}, where individual makers contribute specialized knowledge that enhances the collective capacity for creative expression across diverse cultural and technological contexts.
 
 \subsection{Plugin Architecture and Computational Transparency}
 
@@ -79,4 +207,3 @@ The plugin architecture operates through computational augmentation rather than 
 \vspace{0.5cm}
 
 Integration with Grasshopper leverages the platform's node-based visual programming environment to maintain transparency in computational processes. Unlike black-box systems that hide their operational logic, Grasshopper's visual programming approach enables makers to understand, modify, and extend the computational relationships that connect design intentions with fabrication outcomes. This transparency supports the adaptive authority essential for unified agency.
-
