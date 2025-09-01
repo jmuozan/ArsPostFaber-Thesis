@@ -9,7 +9,7 @@
 % Set up page style for appendices
 \pagestyle{fancy}
 \fancyhf{} % Clear all header and footer fields
-\fancyhead[L]{\footnotesize\textit{Ars Post Faber: Digital Fabrication Democratization Through Embodied Knowledge Preservation}}
+\fancyhead[L]{\footnotesize\textit{Ars Post Faber: Digital fabrication democratization through embodied knowledge preservation}}
 \fancyfoot[C]{\thepage} % Page number in footer center
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
@@ -26,15 +26,20 @@
 \setlength{\parindent}{0pt}
 
 \clearpage
-\section{\textit{AI.RTISANSHIP} Technical Documentation}
+\section{\textit{AI.RTISANSHIP} technical documentation}
 
-The \textit{AI.RTISANSHIP} experiment represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning systems. This technical documentation outlines the complete implementation pipeline, from data collection through real-time prediction deployment.
+The \textit{AI.RTISANSHIP} experiment represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning. This technical documentation outlines the complete implementation pipeline, from data collection through real-time prediction deployment.
 
-\subsection{System Architecture Overview}
+\vspace{0.5cm}
+
+The code for this project can be found opened under an MIT license on the following GitHub repository: \href{https://github.com/jmuozan/ML_Sequence_Recognition}{github.com/jmuozan/ML\_Sequence\_Recognition}
+
+\subsection{System architecture overview}
 
 The system implemented a complete machine learning pipeline organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), containing 53 cells that progressively built from data collection to real-time prediction capabilities.
 
-The architecture followed a sequential processing model:
+\vspace{0.5cm}
+
 \begin{enumerate}
 \item Data capture using MediaPipe holistic landmark detection
 \item Manual labeling and quality assurance of movement sequences
@@ -44,9 +49,11 @@ The architecture followed a sequential processing model:
 \item Real-time prediction system deployment
 \end{enumerate}
 
-\subsection{Data Collection and MediaPipe Integration}
+\vspace{0.5cm}
 
-\subsubsection{Library Installation and Setup}
+\subsection{Data collection and mediaPipe integration}
+
+\subsubsection{Library installation and setup}
 
 The system began with installation of core computer vision and machine learning dependencies:
 
@@ -54,7 +61,7 @@ The system began with installation of core computer vision and machine learning 
 pip install mediapipe opencv-python pandas numpy matplotlib
 \end{verbatim}
 
-Essential library imports established the computational environment:
+Essential library imports establishing the environment:
 
 \begin{verbatim}
 import mediapipe as mp
@@ -68,9 +75,9 @@ from matplotlib import pyplot as plt
 import math
 \end{verbatim}
 
-\subsubsection{MediaPipe Holistic Model Configuration}
+\subsubsection{MediaPipe holistic model configuration}
 
-The landmark detection system utilized MediaPipe's holistic model, configured for simultaneous pose and hand tracking:
+The landmark detection system used MediaPipe's holistic model, configured for simultaneous pose and hand tracking:
 
 \begin{verbatim}
 mp_pose = mp.solutions.pose
@@ -100,11 +107,11 @@ with mp_pose.Pose(min_detection_confidence=0.5,
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 \end{verbatim}
 
-The detection confidence thresholds of 0.5 provided a balance between accuracy and processing speed, while the tracking confidence maintained temporal consistency across frames.
+Where the detection confidence thresholds of 0.5 looked to find certain balance between accuracy and speed, while the tracking confidence maintained certain consistency consistency across frames.
 
-\subsubsection{Feature Vector Construction}
+\subsubsection{Feature vector construction}
 
-The system extracted 225-dimensional feature vectors from each frame, combining pose and hand landmark coordinates:
+After, the system extracts 225-dimensional feature vectors from each frame, combining pose and hand landmark coordinates:
 
 \begin{verbatim}
 def extract_keypoints(results):
@@ -126,9 +133,9 @@ def extract_keypoints(results):
     return np.concatenate([pose, lh, rh])
 \end{verbatim}
 
-\subsubsection{Data Collection Workflow}
+\subsubsection{Data collection workflow}
 
-The data collection process implemented semi-automated labeling through keyboard interaction:
+In order to process the data collection, this script implemented a semi-automated labeling through keyboard interaction:
 
 \begin{verbatim}
 # CSV header structure for 225 features + metadata
@@ -152,11 +159,11 @@ elif key == ord('q'):  # Quit application
     break
 \end{verbatim}
 
-\subsection{Data Processing and Feature Engineering}
+\subsection{Data processing and feature extraction}
 
-\subsubsection{Dataset Consolidation}
+\subsubsection{Consolidation}
 
-Multiple CSV files from different recording sessions were consolidated into a unified training dataset:
+Multiple CSV files from different recording sessions and movements were combined into a unified training dataset using pandas:
 
 \begin{verbatim}
 # Combine multiple data collection sessions
@@ -170,9 +177,9 @@ print("Dataset shape: " + str(rows) + " rows, " + str(columns) + " columns")
 print("Expected features: " + str(21*3 + 21*3 + 33*3) + " = 225")
 \end{verbatim}
 
-\subsubsection{Label Engineering}
+\subsubsection{Labeling}
 
-The labeling system combined movement type with correctness assessment:
+The labeling system combined movement type with correctness assessment (asigning "true" if correct and "flase" if incorrect):
 
 \begin{verbatim}
 # Transform binary accuracy to readable labels
@@ -186,9 +193,9 @@ unique_labels = data['label'].unique()
 print("Classes identified: " + str(unique_labels))
 \end{verbatim}
 
-\subsubsection{Sequence Organization}
+\subsubsection{Sequence organization}
 
-The temporal data was organized into sequence-based directory structures for LSTM training:
+This temporal labeled data was organized into sequence-based directory structures for the posterior LSTM training:
 
 \begin{verbatim}
 def create_sequence_directories(csv_file, base_folder):
@@ -214,9 +221,9 @@ def create_sequence_directories(csv_file, base_folder):
                 np.save(os.path.join(seq_folder, str(idx) + ".npy"), features)
 \end{verbatim}
 
-\subsection{Neural Network Architecture}
+\subsection{Neural network architecture}
 
-\subsubsection{Model Design}
+\subsubsection{Model design}
 
 The classification system implemented a three-layer bidirectional LSTM architecture optimized for temporal sequence recognition:
 
@@ -254,9 +261,9 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'])
 \end{verbatim}
 
-\subsubsection{Training Configuration}
+\subsubsection{Training configuration}
 
-Advanced training callbacks implemented sophisticated learning control:
+Training callbacks were implemented for learning control:
 
 \begin{verbatim}
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
@@ -284,15 +291,15 @@ history = model.fit(X_train, y_train,
                    callbacks=[early_stopping, checkpoint, reduce_lr])
 \end{verbatim}
 
-\subsection{Real-Time Prediction System}
+\subsection{Real-time prediction}
 
-\subsubsection{Live Processing Pipeline}
+\subsubsection{Live processing pipeline}
 
-The real-time system integrated MediaPipe detection with trained model inference:
+In order to test the proper functioning of 'actions.h5' a real-time system integrating the MediaPipe detection with trained model inference was implemented:
 
 \begin{verbatim}
 def mediapipe_detection(image, model):
-    """Process frame through MediaPipe pipeline"""
+    # Process frame through MediaPipe pipeline
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image.flags.writeable = False
     results = model.process(image)
@@ -301,7 +308,7 @@ def mediapipe_detection(image, model):
     return image, results
 
 def draw_styled_landmarks(image, results, incorrect_movement):
-    """Render landmarks with correctness-based color coding"""
+    # Render landmarks with correctness-based color coding
     color = (0, 0, 255) if incorrect_movement else (0, 255, 0)  # Red/Green
     
     # Draw pose landmarks
@@ -319,9 +326,9 @@ def draw_styled_landmarks(image, results, incorrect_movement):
             mp_drawing.DrawingSpec(color=color, thickness=2))
 \end{verbatim}
 
-\subsubsection{Rolling Buffer Implementation}
+\subsubsection{Rolling buffer implementation}
 
-The system maintained temporal context through a rolling frame buffer:
+The system designed looked to maintain certain temporal context to be able to make the predictions through a frame buffer, saving a certain amount of frames and processign constantly:
 
 \begin{verbatim}
 # Initialize system components
@@ -353,7 +360,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
                 # Visual feedback
                 draw_styled_landmarks(image, results, incorrect_movement)
                 color = (0, 0, 255) if incorrect_movement else (0, 255, 0)
-                cv2.putText(image, f'Action: {action}', (15, 50), 
+                cv2.putText(image, 'Action: ' + str(action), (15, 50), 
                            cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
         
         cv2.imshow('AI.RTISANSHIP', image)
@@ -361,11 +368,11 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
             break
 \end{verbatim}
 
-\subsection{Performance Evaluation}
+\subsection{Performance evaluation}
 
-\subsubsection{Classification Metrics}
+\subsubsection{Metrics}
 
-The trained model achieved reasonable accuracy in distinguishing between predefined movement categories:
+Metrics were extracted to see if the trained model achieved reasonable accuracy in distinguishing between predefined movement categories:
 
 \begin{verbatim}
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
@@ -377,37 +384,35 @@ yhat = np.argmax(yhat, axis=1).tolist()
 
 # Calculate accuracy metrics
 accuracy = accuracy_score(ytrue, yhat)
-print(f"Test Accuracy: {accuracy:.3f}")
+print("Test Accuracy: " + str(round(accuracy, 3)))
 
 # Generate confusion matrix
 confusion_matrices = multilabel_confusion_matrix(ytrue, yhat)
 for i, matrix in enumerate(confusion_matrices):
-    print(f"Class {actions[i]} Confusion Matrix:")
+    print("Class " + str(actions[i]) + " Confusion Matrix:")
     print(matrix)
 \end{verbatim}
 
-\subsection{Technical Limitations and Insights}
+\subsection{Technical limitations}
 
 The implementation revealed several critical limitations that informed the broader research conclusions:
 
-\subsubsection{Sensory Constraints}
-Computer vision systems remained blind to essential tactile feedback channels that pottery practice depends upon, including clay resistance, texture variations, and vibrational cues indicating structural integrity.
+\subsubsection{Sensory constraints}
+Computer vision systems remained blind to essential tactile feedback channels that pottery practice depends upon, including clay resistance, texture variations, and vibrational cues.
 
-\subsubsection{Individual Variation}
-Each participating artisan demonstrated distinct approaches to identical tasks, reflecting personal histories and aesthetic preferences that resist standardization into training categories.
+\subsubsection{Individual variation}
+Each participating artisan attempted different approaches to identical tasks, reflecting personal histories and preferences that "resist" standardization into training categories.
 
-\subsubsection{Adaptive vs. Pattern-Based Practice}
-The machine learning system's requirement for discrete classification categories proved incompatible with pottery's emphasis on continuous adaptation to emergent material conditions.
-
-These technical findings supported the research's theoretical argument that embodied knowledge preservation cannot be achieved through computational extraction and standardization, but requires organizational approaches that maintain the conditions for ongoing adaptive response within making processes.
+\subsubsection{Adaptive vs. pattern-based practice}
+The machine learning system's requirement for discrete classification categories proved incompatible with pottery's emphasis on adaptation to emergent material conditions.
 
 \clearpage
-\section{\textit{CR3ATED} Technical Documentation}
+\section{\textit{CR3ATED} Technical documentation}
 
 
 \clearpage
-\section{\textit{AI Tools} Technical Documentation}
+\section{\textit{AI Tools} Technical documentation}
 
 
 \clearpage
-\section{\textit{Ars Post Faber} Technical Documentation}
+\section{\textit{Ars Post Faber} Technical documentation}
