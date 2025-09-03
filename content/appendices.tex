@@ -25,10 +25,9 @@
 % Set no paragraph indentation
 \setlength{\parindent}{0pt}
 
-\clearpage
 \section{\textit{AI.RTISANSHIP} technical documentation}
 
-The \textit{AI.RTISANSHIP} experiment represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning. This technical documentation outlines the complete implementation pipeline, from data collection through real-time prediction deployment.
+\textit{AI.RTISANSHIP} experiment represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning. This technical documentation outlines the implementation pipeline, from data collection through real-time prediction deployment.
 
 \vspace{0.5cm}
 
@@ -36,50 +35,31 @@ The code for this project can be found opened under an MIT license on the follow
 
 \subsection{System architecture overview}
 
-The system implemented a complete machine learning pipeline organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), containing 53 cells that progressively built from data collection to real-time prediction capabilities.
+The system implemented a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), progressively building from data collection to real-time prediction capabilities.
 
-\vspace{0.5cm}
-
+Technology stack:
 \begin{enumerate}
-\item Data capture using MediaPipe holistic landmark detection
-\item Manual labeling and quality assurance of movement sequences
-\item Data preprocessing and feature extraction
-\item Neural network training with bidirectional LSTM architecture
-\item Model validation and performance evaluation
-\item Real-time prediction system deployment
+\item MediaPipe for holistic landmark detection (pose and hand tracking)
+\item OpenCV for computer vision and video processing
+\item TensorFlow/Keras for bidirectional LSTM neural network training
+\item Pandas and NumPy for data processing and feature extraction
 \end{enumerate}
 
-\vspace{0.5cm}
+This system captures 225-dimensional feature vectors from pose and hand landmarks, processes sequences through LSTM networks, and provides real-time feedback about movement correctness.
 
-\subsection{Data collection and mediaPipe integration}
+\subsection{Data collection and MediaPipe integration}
 
-\subsubsection{Library installation and setup}
+\subsubsection{Library setup and MediaPipe configuration}
 
-The system began with installation of core computer vision and machine learning dependencies:
-
-\begin{verbatim}
-pip install mediapipe opencv-python pandas numpy matplotlib
-\end{verbatim}
-
-Essential library imports establishing the environment:
+MediaPipe's holistic model ids used to do a simultaneous pose and hand tracking.
 
 \begin{verbatim}
 import mediapipe as mp
 import cv2
 import numpy as np
-import time
 import pandas as pd
-import csv
-import os
-from matplotlib import pyplot as plt
-import math
-\end{verbatim}
+from datetime import datetime
 
-\subsubsection{MediaPipe holistic model configuration}
-
-The landmark detection system used MediaPipe's holistic model, configured for simultaneous pose and hand tracking:
-
-\begin{verbatim}
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 
@@ -94,11 +74,11 @@ with mp_pose.Pose(min_detection_confidence=0.5,
         if not ret:
             break
             
-        # Convert BGR to RGB
+        # Convert BGR to RGB for MediaPipe
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False
         
-        # Make detection
+        # Make detections
         pose_results = pose.process(image)
         hand_results = hands.process(image)
         
@@ -107,11 +87,11 @@ with mp_pose.Pose(min_detection_confidence=0.5,
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 \end{verbatim}
 
-Where the detection confidence thresholds of 0.5 looked to find certain balance between accuracy and speed, while the tracking confidence maintained certain consistency consistency across frames.
+The detection confidence thresholds of 0.5 looks to balance accuracy and speed, maintaining consistency across frames.
 
-\subsubsection{Feature vector construction}
+\subsubsection{Feature extraction system}
 
-After, the system extracts 225-dimensional feature vectors from each frame, combining pose and hand landmark coordinates:
+As mentioned, the system extracts 225-dimensional feature vectors from each frame, creating a representation of body posture and hand positions for each video frame
 
 \begin{verbatim}
 def extract_keypoints(results):
@@ -133,18 +113,11 @@ def extract_keypoints(results):
     return np.concatenate([pose, lh, rh])
 \end{verbatim}
 
-\subsubsection{Data collection workflow}
+\subsubsection{Semi-automated data labeling}
 
-In order to process the data collection, this script implemented a semi-automated labeling through keyboard interaction:
+The data collection implements a semiautomatic labeling based on a keyboard key controlled system for movement sequences, allowing for a "real-time" labeling.
 
 \begin{verbatim}
-# CSV header structure for 225 features + metadata
-headers = ['class', 'accuracy', 'sequence'] 
-headers.extend(['pose_' + coord + str(i) for i in range(33) 
-                for coord in ('x', 'y', 'z')])
-headers.extend([hand + '_' + coord + str(i) for hand in ('right_hand', 'left_hand') 
-                for i in range(21) for coord in ('x', 'y', 'z')])
-
 # Recording control system
 key = cv2.waitKey(10) & 0xFF
 if key == ord('r'):  # Start recording correct sequence
@@ -159,11 +132,11 @@ elif key == ord('q'):  # Quit application
     break
 \end{verbatim}
 
-\subsection{Data processing and feature extraction}
+\subsection{Data processing and neural network training}
 
-\subsubsection{Consolidation}
+\subsubsection{Data consolidation and labeling}
 
-Multiple CSV files from different recording sessions and movements were combined into a unified training dataset using pandas:
+After labeling multiple recording sessions, these are combined into a unified training dataset.
 
 \begin{verbatim}
 # Combine multiple data collection sessions
@@ -171,61 +144,16 @@ df1 = pd.read_csv('coordinates_1.csv', header=None)
 df2 = pd.read_csv('coordinates_2.csv', header=None) 
 combined_df = pd.concat([df1, df2], axis=0, ignore_index=True)
 
-# Verify feature dimensions
-rows, columns = combined_df.shape
-print("Dataset shape: " + str(rows) + " rows, " + str(columns) + " columns")
-print("Expected features: " + str(21*3 + 21*3 + 33*3) + " = 225")
-\end{verbatim}
-
-\subsubsection{Labeling}
-
-The labeling system combined movement type with correctness assessment (asigning "true" if correct and "flase" if incorrect):
-
-\begin{verbatim}
 # Transform binary accuracy to readable labels
-data['accuracy'] = data['accuracy'].map({0: 'W', 1: 'R'})
+data['accuracy'] = data['accuracy'].map({0: 'W', 1: 'R'})  # Wrong/Right
 
 # Create composite labels (e.g., "pottery_R", "pottery_W")
 data['label'] = data.iloc[:, 0].astype(str) + '_' + data['accuracy']
-
-# Extract unique class labels
-unique_labels = data['label'].unique()
-print("Classes identified: " + str(unique_labels))
 \end{verbatim}
 
-\subsubsection{Sequence organization}
+\subsubsection{LSTM neural network architecture}
 
-This temporal labeled data was organized into sequence-based directory structures for the posterior LSTM training:
-
-\begin{verbatim}
-def create_sequence_directories(csv_file, base_folder):
-    """
-    Organize frame data into sequence-based directory structure
-    """
-    data = pd.read_csv(csv_file)
-    
-    for label in data['label'].unique():
-        label_folder = os.path.join(base_folder, label)
-        os.makedirs(label_folder, exist_ok=True)
-        
-        label_data = data[data['label'] == label]
-        sequences = label_data['sequence'].unique()
-        
-        for seq_num in sequences:
-            seq_folder = os.path.join(label_folder, str(seq_num))
-            os.makedirs(seq_folder, exist_ok=True)
-            
-            seq_data = label_data[label_data['sequence'] == seq_num]
-            for idx, row in seq_data.iterrows():
-                features = row.iloc[3:].values  # Skip metadata columns
-                np.save(os.path.join(seq_folder, str(idx) + ".npy"), features)
-\end{verbatim}
-
-\subsection{Neural network architecture}
-
-\subsubsection{Model design}
-
-The classification system implemented a three-layer bidirectional LSTM architecture optimized for temporal sequence recognition:
+The classification system uses a three-layer bidirectional LSTM architecture for temporal sequence recognition:
 
 \begin{verbatim}
 from tensorflow.keras.models import Sequential
@@ -261,9 +189,11 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'])
 \end{verbatim}
 
-\subsubsection{Training configuration}
+This bidirectional LSTM processes sequences in both forward and backward directions, capturing temporal dependencies in movement patterns.
 
-Training callbacks were implemented for learning control:
+\subsubsection{Training configuration with callbacks}
+
+Training uses callbacks for learning control and model optimization:
 
 \begin{verbatim}
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
@@ -291,11 +221,11 @@ history = model.fit(X_train, y_train,
                    callbacks=[early_stopping, checkpoint, reduce_lr])
 \end{verbatim}
 
-\subsection{Real-time prediction}
+\subsection{Real-time prediction system}
 
 \subsubsection{Live processing pipeline}
 
-In order to test the proper functioning of 'actions.h5' a real-time system integrating the MediaPipe detection with trained model inference was implemented:
+To test the results of the training a real-time detection system is created, integrating MediaPipe detection with the trained model inference:
 
 \begin{verbatim}
 def mediapipe_detection(image, model):
@@ -317,18 +247,13 @@ def draw_styled_landmarks(image, results, incorrect_movement):
             image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
             mp_drawing.DrawingSpec(color=color, thickness=2),
             mp_drawing.DrawingSpec(color=color, thickness=2))
-    
-    # Draw hand landmarks
-    if results.left_hand_landmarks:
-        mp_drawing.draw_landmarks(
-            image, results.left_hand_landmarks, mp_hands.HAND_CONNECTIONS,
-            mp_drawing.DrawingSpec(color=color, thickness=2),
-            mp_drawing.DrawingSpec(color=color, thickness=2))
 \end{verbatim}
 
-\subsubsection{Rolling buffer implementation}
+The system provides visual feedback through color-coded landmark rendering - green for correct movements, red for incorrect ones.
 
-The system designed looked to maintain certain temporal context to be able to make the predictions through a frame buffer, saving a certain amount of frames and processign constantly:
+\subsubsection{Rolling buffer for temporal context}
+
+This real-time prediction system maintains temporal context through a frame buffer capturing and saving a set of frames and rewriting it every frame so the prediction is done over the frame collection.
 
 \begin{verbatim}
 # Initialize system components
@@ -342,10 +267,9 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
         ret, frame = cap.read()
         frame = cv2.flip(frame, 1)  # Mirror image
         
-        # Process frame
+        # Process frame and extract keypoints
         image, results = mediapipe_detection(frame, holistic)
         
-        # Extract and buffer keypoints
         if results.pose_landmarks or results.left_hand_landmarks or results.right_hand_landmarks:
             keypoints = extract_keypoints(results)
             sequence.append(keypoints)
@@ -368,45 +292,17 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
             break
 \end{verbatim}
 
-\subsection{Performance evaluation}
+\subsection{Technical limitations and research insights}
 
-\subsubsection{Metrics}
-
-Metrics were extracted to see if the trained model achieved reasonable accuracy in distinguishing between predefined movement categories:
-
-\begin{verbatim}
-from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
-
-# Generate predictions on test set
-yhat = model.predict(X_test)
-ytrue = np.argmax(y_test, axis=1).tolist()  
-yhat = np.argmax(yhat, axis=1).tolist()
-
-# Calculate accuracy metrics
-accuracy = accuracy_score(ytrue, yhat)
-print("Test Accuracy: " + str(round(accuracy, 3)))
-
-# Generate confusion matrix
-confusion_matrices = multilabel_confusion_matrix(ytrue, yhat)
-for i, matrix in enumerate(confusion_matrices):
-    print("Class " + str(actions[i]) + " Confusion Matrix:")
-    print(matrix)
-\end{verbatim}
-
-\subsection{Technical limitations}
-
-The implementation revealed several critical limitations that informed the broader research conclusions:
+This implementation showcased certain limitations that informed already mentioned research conclusions:
 
 \subsubsection{Sensory constraints}
-Computer vision systems remained blind to essential tactile feedback channels that pottery practice depends upon, including clay resistance, texture variations, and vibrational cues.
+Computer vision systems remained blind to tactile feedback channels that limit the use of the trained model.
 
-\subsubsection{Individual variation}
-Each participating artisan attempted different approaches to identical tasks, reflecting personal histories and preferences that "resist" standardization into training categories.
+\subsubsection{Individual variation and resistance to standardization}
+Each participating artisan approached identical tasks differently, reflecting experience, histories and preferences that resist standardization.
 
-\subsubsection{Adaptive vs. pattern-based practice}
-The machine learning system's requirement for discrete classification categories proved incompatible with pottery's emphasis on adaptation to emergent material conditions.
-
-\clearpage
+These limitations demonstrated that while the technical implementation worked as designed, the approach of digitizing embodied knowledge through movement classification "misunderstood" the nature of craft practice.
 
 \clearpage
 \section{\textit{CR3ATED} Technical documentation}
