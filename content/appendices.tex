@@ -409,6 +409,462 @@ The machine learning system's requirement for discrete classification categories
 \clearpage
 \section{\textit{CR3ATED} Technical documentation}
 
+As discussed in Chapter 3, the \textit{CR3ATED} web application was developed to test alternative interface approaches for preserving creative agency within digital fabrication workflows. This technical documentation outlines the complete implementation of the 3D revolution modeling webapp.
+
+\vspace{0.5cm}
+
+The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/CR3ATED}{github.com/jmuozan/CR3ATED}, and a live demonstration can be accessed at \href{https://jmuozan.github.io/CR3ATED/}{jmuozan.github.io/CR3ATED}.
+
+\subsection{System architecture overview}
+
+The web application implements a complete 3D modeling and manipulation pipeline using modern web technologies, focusing on revolution surface generation and mesh processing capabilities. The modular architecture of the web divides functionalities across specific JavaScript modules for maintainability and extensibility.
+
+\vspace{0.5cm}
+
+Core technology stack:
+\begin{enumerate}
+\item Three.js r128 for 3D rendering and scene management
+\item WebGL-accelerated graphics through Three.js WebGLRenderer
+\item dat.GUI for real-time parameter control interface
+\item Custom Loop Subdivision implementation for mesh smoothing
+\item Modular ES6+ JavaScript architecture
+\end{enumerate}
+
+\vspace{0.5cm}
+
+The website supports STL import/export, image-based displacement mapping, interactive mesh subdivision, and real-time 3D manipulation through touch and mouse interfaces.
+
+\subsection{Scene initialization rendering}
+
+\subsubsection{Three.js scene setup}
+
+The core 3D environment initializes through a scene configuration that establishes the WebGL rendering context and user interaction capabilities. The initialization process creates four primary components that work together to enable real-time 3D visualization: the scene graph container, perspective camera with proper aspect ratio handling, WebGL renderer with antialiasing for smooth edges, and orbit controls for user navigation.
+
+\begin{verbatim}
+export function initializeScene() {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xffffff);
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // Lighting Setup
+    setupLights(scene);
+
+    return { scene, camera, renderer, controls };
+}
+\end{verbatim}
+
+The scene initialization function creates a THREE.Scene object that serves as the root container for all 3D objects, lights, and cameras in the application. The perspective camera configuration uses a 75-degree field of view, to provide a understandable viewing angle looking to avoide the distortion effects of wider angles. The aspect ratio automatically adjusts to the browser window dimensions, ensuring proper proportions across different screen sizes. 
+
+\subsubsection{lighting system}
+
+The application implements a lighting setup to ensure consistent visibility from all viewing angles of the 3d:
+
+\begin{verbatim}
+function setupLights(scene) {
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 5, 5);
+    scene.add(directionalLight);
+
+    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight1.position.set(-5, 5, 5);
+    scene.add(directionalLight1);
+
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight2.position.set(5, -5, 5);
+    scene.add(directionalLight2);
+
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight3.position.set(5, 5, -5);
+    scene.add(directionalLight3);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.5);
+    pointLight.position.set(0, 0, 20);
+    scene.add(pointLight);
+}
+\end{verbatim}
+
+\subsection{STL file processing and mesh management}
+
+\subsubsection{STL import functionality}
+
+The application provides STL and OBJ file loading with automatic geometry optimization independent of the file type.
+
+\begin{verbatim}
+export function handleSTLUpload({
+    event, scene, mesh, wireframe, solidMaterial, wireframeMaterial,
+    rotation, rotationFolder, applyDisplacement, centerCamera,
+    currentMesh, currentWireframe, displacementTexture, displacementSettings, scaleFactors
+}) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function (e) {
+            const loader = new THREE.STLLoader();
+            const geometry = loader.parse(e.target.result);
+
+            if (mesh) {
+                scene.remove(mesh);
+                scene.remove(wireframe);
+            }
+
+            geometry.computeVertexNormals();
+            
+            // Store original positions for displacement operations
+            geometry.originalPositions = geometry.attributes.position.array.slice();
+
+            const newMesh = new THREE.Mesh(geometry, solidMaterial);
+            const newWireframe = new THREE.Mesh(geometry.clone(), wireframeMaterial);
+            newWireframe.visible = false;
+
+            // Default vertical orientation
+            newMesh.rotation.x = -Math.PI / 2;
+            newWireframe.rotation.x = -Math.PI / 2;
+
+            scene.add(newMesh);
+            scene.add(newWireframe);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+}
+\end{verbatim}
+
+\subsubsection{STL export capability}
+
+Also enabling STL export of the final modified geometries created and modified in the wbeapp.
+
+\begin{verbatim}
+export function downloadSTL(currentMesh) {
+    if (!currentMesh) return;
+    
+    const exporter = new THREE.STLExporter();
+    const stlData = exporter.parse(currentMesh);
+
+    const blob = new Blob([stlData], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = 'mesh.stl';
+    link.click();
+    document.body.removeChild(link);
+}
+\end{verbatim}
+
+\subsection{Loop subdivision surface implementation}
+
+\subsubsection{Advanced mesh subdivision}
+
+To help editing the meshes imported, the application includes a Loop subdivision implementation supporting different subdivision strategies so more detailed modifications over the meshes can be done independent of their properties.
+
+\begin{verbatim}
+export function performSubdivision({
+    mesh, wireframe, scene, solidMaterial, wireframeMaterial,
+    subdivisionSettings, displacementTexture, updateDimensions, applyDisplacement
+}) {
+    if (!mesh) return;
+    
+    try {
+        // Store current transformations
+        const currentScale = mesh.scale.clone();
+        const currentRotation = mesh.rotation.clone();
+        const currentPosition = mesh.position.clone();
+        
+        // Clone and subdivide geometry
+        const geometry = mesh.geometry.clone();
+        const subdivided = LoopSubdivision.modify(geometry, subdivisionSettings.iterations, {
+            split: subdivisionSettings.split,
+            preserveEdges: subdivisionSettings.preserveEdges,
+            flatOnly: subdivisionSettings.flatOnly
+        });
+
+        // Store original positions for displacement
+        subdivided.originalPositions = subdivided.attributes.position.array.slice();
+        
+        // Create new meshes with subdivided geometry
+        const newMesh = new THREE.Mesh(subdivided, solidMaterial);
+        const newWireframe = new THREE.Mesh(subdivided.clone(), wireframeMaterial);
+        
+        // Restore transformations
+        newMesh.scale.copy(currentScale);
+        newMesh.rotation.copy(currentRotation);
+        newMesh.position.copy(currentPosition);
+        
+        scene.add(newMesh);
+        scene.add(newWireframe);
+        
+        return { mesh: newMesh, wireframe: newWireframe };
+        
+    } catch (error) {
+        console.error('Subdivision error:', error);
+        return null;
+    }
+}
+\end{verbatim}
+
+\subsection{Image-based displacement mapping}
+
+\subsubsection{UV coordinate generation}
+
+The UV coordinate generation system tries to create a "coherent" mapping between 2D texture space and 3D mesh surfaces for displacement operations. The implementation uses bounding box projection to establish consistent UV coordinates across arbitrary revolve mesh geometries, enabling image-based surface modification without requiring previously done texture coordinates that do not exist in imported STL files.
+
+\begin{verbatim}
+export function generateUVs(geometry, displacementSettings) {
+    const position = geometry.attributes.position;
+    const box = new THREE.Box3().setFromBufferAttribute(position);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    const uv = new THREE.BufferAttribute(new Float32Array(position.count * 2), 2);
+    const vertexUVs = new Map();
+    const positionArray = position.array;
+
+    for (let i = 0; i < position.count; i++) {
+        const x = positionArray[i * 3];
+        const y = positionArray[i * 3 + 1];
+        const z = positionArray[i * 3 + 2];
+        
+        const key = `${x.toFixed(4)},${y.toFixed(4)},${z.toFixed(4)}`;
+        
+        if (!vertexUVs.has(key)) {
+            let uvX = (x - box.min.x) / size.x;
+            let uvY = (z - box.min.z) / size.z;
+            
+            if (displacementSettings.flipUV) {
+                uvX = 1 - uvX;
+                uvY = 1 - uvY;
+            }
+            
+            vertexUVs.set(key, { x: uvX, y: uvY });
+        }
+        
+        const uvData = vertexUVs.get(key);
+        uv.setXY(i, uvData.x, uvData.y);
+    }
+
+    geometry.setAttribute('uv', uv);
+    return uv;
+}
+\end{verbatim}
+
+The UV generation process begins by calculating the axis-aligned bounding box of the mesh geometry, establishing the spatial extents that will define the texture mapping domain. Thn the system projects 3D vertices onto the XZ plane (using X and Z coordinates while ignoring Y), creating a planar mapping suitable for displacement operations avoiding the distortion and discontinuities that can occur with spherical or cylindrical projection methods.
+
+\vspace{0.5cm}
+
+These UVs arestandarized to 0-1 texture coordinate range by subtracting the bounding box minimum and dividing by the size vector. The flipUV option provides user control over texture orientation, addressing situations where displacement images need to be inverted to achieve the desired surface effect. This flexibility accommodates different image creation workflows and enables users to correct orientation mismatches without requiring external image editing software.
+
+\subsubsection{Displacement calculation and application}
+
+The displacement mapping system represents the most computationally intensive feature of the application, implementing real-time surface deformation based on image height data through vertex manipulation algorithms. The system processes images through HTML5 Canvas API to extract pixel luminance values, then translates those values into 3D surface displacement along vertex normal vectors, enabling users to apply surface textures and relief patterns to their meshes.
+
+\begin{verbatim}
+export function applyDisplacementMap(geometry, texture, scale, displacementSettings) {
+    if (!texture || !geometry) return geometry;
+    
+    geometry.computeVertexNormals();
+
+    const position = geometry.attributes.position;
+    const normals = geometry.attributes.normal;
+    const uv = generateUVs(geometry, displacementSettings);
+    const dispMap = texture.image;
+
+    if (!dispMap) return geometry;
+
+    // Create canvas for image data extraction
+    const canvas = document.createElement('canvas');
+    canvas.width = dispMap.width;
+    canvas.height = dispMap.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(dispMap, 0, 0);
+    const imageData = context.getImageData(0, 0, dispMap.width, dispMap.height);
+    const data = imageData.data;
+
+    // Process displacement per vertex
+    const vertexMap = new Map();
+    const positionArray = position.array;
+    
+    for (let i = 0; i < position.count; i++) {
+        const x = positionArray[i * 3];
+        const y = positionArray[i * 3 + 1];
+        const z = positionArray[i * 3 + 2];
+        
+        const key = `${x.toFixed(4)},${y.toFixed(4)},${z.toFixed(4)}`;
+        
+        // Sample displacement from image
+        const ux = Math.floor(uv.getX(i) * dispMap.width);
+        const uy = Math.floor(uv.getY(i) * dispMap.height);
+        const pixelIndex = (uy * dispMap.width + ux) * 4;
+        const displacement = (data[pixelIndex] / 255) * scale;
+        
+        if (!vertexMap.has(key)) {
+            vertexMap.set(key, {
+                indices: [i],
+                displacement: displacement,
+                normal: new THREE.Vector3(normals.getX(i), normals.getY(i), normals.getZ(i))
+            });
+        }
+    }
+
+    // Apply displacement along vertex normals
+    vertexMap.forEach(vertexData => {
+        vertexData.normal.normalize();
+        vertexData.indices.forEach(index => {
+            position.setXYZ(
+                index,
+                positionArray[index * 3] + vertexData.normal.x * vertexData.displacement,
+                positionArray[index * 3 + 1] + vertexData.normal.y * vertexData.displacement,
+                positionArray[index * 3 + 2] + vertexData.normal.z * vertexData.displacement
+            );
+        });
+    });
+
+    position.needsUpdate = true;
+    geometry.computeVertexNormals();
+    return geometry;
+}
+\end{verbatim}
+
+The displacement calculation process begins with normal vector computation, to determine the direction of surface displacement at each vertex. then the system system uses Three.js's computeVertexNormals() method to calculate per-vertex normal vectors based on adjacent face orientations, ensuring accurate displacement direction regardless of mesh topology complexity. 
+
+\vspace{0.5cm}
+
+Vertices are moved along their normal vectors by the calculated displacement amount, creating surface relief that follows the mesh topology rather than imposing arbitrary directional changes. The position.needsUpdate flag triggers Three.js buffer attribute synchronization with the GPU, while the final computeVertexNormals() call recalculates lighting normals to accurately reflect the new surface geometry, ensuring proper shading and visual feedback of the displacement effects. images through HTML5 Canvas to extract height information:
+
+\begin{verbatim}
+export function applyDisplacementMap(geometry, texture, scale, displacementSettings) {
+    if (!texture || !geometry) return geometry;
+    
+    geometry.computeVertexNormals();
+
+    const position = geometry.attributes.position;
+    const normals = geometry.attributes.normal;
+    const uv = generateUVs(geometry, displacementSettings);
+    const dispMap = texture.image;
+
+    if (!dispMap) return geometry;
+
+    // Create canvas for image data extraction
+    const canvas = document.createElement('canvas');
+    canvas.width = dispMap.width;
+    canvas.height = dispMap.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(dispMap, 0, 0);
+    const imageData = context.getImageData(0, 0, dispMap.width, dispMap.height);
+    const data = imageData.data;
+
+    // Process displacement per vertex
+    const vertexMap = new Map();
+    const positionArray = position.array;
+    
+    for (let i = 0; i < position.count; i++) {
+        const x = positionArray[i * 3];
+        const y = positionArray[i * 3 + 1];
+        const z = positionArray[i * 3 + 2];
+        
+        const key = `${x.toFixed(4)},${y.toFixed(4)},${z.toFixed(4)}`;
+        
+        // Sample displacement from image
+        const ux = Math.floor(uv.getX(i) * dispMap.width);
+        const uy = Math.floor(uv.getY(i) * dispMap.height);
+        const pixelIndex = (uy * dispMap.width + ux) * 4;
+        const displacement = (data[pixelIndex] / 255) * scale;
+        
+        if (!vertexMap.has(key)) {
+            vertexMap.set(key, {
+                indices: [i],
+                displacement: displacement,
+                normal: new THREE.Vector3(normals.getX(i), normals.getY(i), normals.getZ(i))
+            });
+        }
+    }
+
+    // Apply displacement along vertex normals
+    vertexMap.forEach(vertexData => {
+        vertexData.normal.normalize();
+        vertexData.indices.forEach(index => {
+            position.setXYZ(
+                index,
+                positionArray[index * 3] + vertexData.normal.x * vertexData.displacement,
+                positionArray[index * 3 + 1] + vertexData.normal.y * vertexData.displacement,
+                positionArray[index * 3 + 2] + vertexData.normal.z * vertexData.displacement
+            );
+        });
+    });
+
+    position.needsUpdate = true;
+    geometry.computeVertexNormals();
+    return geometry;
+}
+\end{verbatim}
+
+\subsection{Interactive drawing interface}
+
+\subsubsection{Modal-based drawing system}
+
+As explained, the app includes an integrated drawing interface in order for the users to create the revolution surfaces, providing a pop up menu for finger drawing with smartphones.
+
+\begin{verbatim}
+function initDrawingBoard() {
+    const modalHTML = `
+        <div id="drawingModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="controls">
+                    <button id="penTool" class="active">✏️ Pen</button>
+                    <div class="control-group">
+                        <label>Points Density: </label>
+                        <input type="range" id="pointDensity" min="1" max="20" value="5">
+                        <span id="densityValue">5px</span>
+                    </div>
+                    <button id="clearCanvas">Clear</button>
+                    <button id="exportSVG">Export SVG</button>
+                    <button id="preview3D">3D Preview</button>
+                    <button id="exportSTL">Export STL</button>
+                </div>
+                <div class="canvas-container">
+                    <svg id="drawing-area" viewbox="0 0 550 400">
+                        <line x1="275" y1="0" x2="275" y2="400" stroke="#666" 
+                              stroke-width="1" stroke-dasharray="5,5"></line>
+                    </svg>
+                    <div id="preview-container"></div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+\end{verbatim}
+
+\subsection{Architecture}
+
+\subsubsection{ES6 module organization}
+
+The application architecture manages the dependenciesthrough ES6 module imports that create clear separation of functions while trying to maintain efficient code organization. This modular approach facilitates maintenance, testing and debugging, and future feature development by isolating functionality within dedicated modules.
+
+\begin{verbatim}
+// Main application orchestration
+import { initializeScene } from './js/sceneSetup.js';
+import { createMaterials, toggleWireframe } from './js/materials.js';
+import { initializeGUI } from './js/guiSetup.js';
+import { createDefaultSettings } from './js/settings.js';
+import { handleSTLUpload, downloadSTL } from './js/handleSTLUpload.js';
+import { handleImageUpload } from './js/imageHandler.js';
+import { performSubdivision } from './js/performSubdivision.js';
+import { applyDisplacement } from './js/displacementMap.js';
+import { applyScaling, updateDimensions } from './js/scaling.js';
+import { centerCamera, setRotation } from './js/cameraControls.js';
+\end{verbatim}
 
 \clearpage
 \section{\textit{AI Tools} Technical documentation}
