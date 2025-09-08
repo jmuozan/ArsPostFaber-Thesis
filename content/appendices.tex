@@ -903,3 +903,1124 @@ Despite these limitations, the plugin successfully shows integration of AI capab
 
 \clearpage
 \section{\textit{Ars Post Faber} Technical documentation}
+
+\textit{Ars Post Faber}, the Grasshopper plugin generated out of the conclusions of this thesis, represents a digital fabrication toolkit that attempts to bridge parametric design with physical production. This technical documentation outlines the main implementation of the five core component categories that enable complete 3D printing workflows, serial communication, mesh processing, photogrammetry, and AI component generation.
+
+\vspace{0.5cm}
+
+The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/ArsPostFaber}{github.com/jmuozan/ArsPostFaber}, with build instructions and component documentation available online on \href{https://jmuozan.github.io/ArsPostFaber-docs/}{https://jmuozan.github.io/ArsPostFaber-docs/}.
+
+\subsection{System architecture overview}
+
+Technology stack:
+\begin{enumerate}
+\item Grasshopper SDK 
+\item RhinoCommon API for 3D geometry processing and viewport integration
+\item Microsoft.CodeAnalysis.CSharp (Roslyn) for runtime C\# compilation in AI components
+\item System.IO.Ports \& SerialPortStream for cross-platform serial communication
+\item QRCoder for QR code generation enabling mobile device connectivity
+\item iText7 \& PdfSharp for PDF processing and AI context building
+\end{enumerate}
+
+This plugin supports the complete 3D printing pipeline, from geometry preprocessing through G-code generation and live printer control, with real-time visualization and path editing capabilities.
+
+\subsection{AI component generation}
+
+\subsubsection{Core implementation architecture}
+
+The AI component generation system implements dynamic Grasshopper component creation through two primary approaches: cloud-based OpenAI API integration and local Ollama model execution. Both components share a common compilation pipeline using Microsoft's Roslyn compiler for runtime C\# code generation.
+
+\subsubsection{OpenAI integration component}
+
+The OpenAI-powered component generator implements an advanced "agent mode" with recursive error correction and PDF context integration:
+
+\begin{verbatim}
+public class OpenAIComponentGeneratorComponent : GH_Component_HTTPAsync
+{
+    private int _compileAttempts = 0;
+    private const int _maxCompileAttempts = 5;
+    private bool _agentMode = true;
+    private bool _isAgentRunning = false;
+    private string _contextCache = null;
+    private const int _maxContextLength = 5000;
+    
+    // Error tracker for compilation feedback
+    private CompilationErrorTracker _errorTracker = new CompilationErrorTracker();
+}
+\end{verbatim}
+
+Key features include agent-based generation with infinite retry loops using compilation diagnostics feedback, PDF context loading that extracts relevant context from programming reference materials, sophisticated error correction that analyzes compilation errors and generates targeted fix prompts, and cross-platform compilation using Roslyn for runtime component assembly generation.
+
+\subsubsection{Ollama local model integration}
+
+The local model variant provides offline operation using Ollama's REST API:
+
+\begin{verbatim}
+public class OllamaComponentMakerComponent : GH_Component_HTTPAsync
+{
+    private bool _agentMode = true;
+    private bool _isAgentRunning = false;
+    private string _contextCache = null;
+    
+    private string BuildSystemPrompt(string description, string componentName, 
+                                   string category, string subcategory)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("You are an expert C# programmer specializing in " +
+                     "Grasshopper plugin development.");
+        // Add PDF context if available
+        if (!string.IsNullOrEmpty(_contextCache))
+        {
+            sb.AppendLine("\n--- REFERENCE CONTEXT ---");
+            sb.AppendLine(_contextCache);
+            sb.AppendLine("--- END REFERENCE CONTEXT ---\n");
+        }
+        return sb.ToString();
+    }
+}
+\end{verbatim}
+
+\subsubsection{Dynamic compilation system}
+
+Both components implement sophisticated runtime compilation using Roslyn:
+
+\begin{verbatim}
+private void CompileCode(string code, string outputPath)
+{
+    var syntaxTree = CSharpSyntaxTree.ParseText(code);
+    
+    // Gather references from loaded assemblies
+    var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location) 
+               && File.Exists(a.Location))
+        .Select(a => a.Location)
+        .Distinct();
+        
+    var refs = assemblies.Select(path => 
+        MetadataReference.CreateFromFile(path)).ToList();
+    
+    // Create compilation
+    var compilation = CSharpCompilation.Create(
+        Path.GetFileNameWithoutExtension(outputPath),
+        new[] { syntaxTree },
+        refs,
+        new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        
+    var result = compilation.Emit(outputPath);
+    
+    if (!result.Success)
+    {
+        var failures = result.Diagnostics.Where(d => 
+            d.Severity == DiagnosticSeverity.Error);
+        var sb = new StringBuilder("Compilation failed:");
+        foreach (var diag in failures)
+            sb.AppendLine(diag.ToString());
+        throw new Exception(sb.ToString());
+    }
+}
+\end{verbatim}
+
+\subsubsection{PDF context management}
+
+The system includes intelligent PDF context extraction for enhanced code generation:
+
+\begin{verbatim}
+public static class PdfContextManager
+{
+    public static string LoadPdfContext(string[] specificFiles = null)
+    {
+        StringBuilder contextBuilder = new StringBuilder();
+        string[] pdfFiles = specificFiles ?? 
+            Directory.GetFiles(_contextFolderPath, "*.pdf", 
+                             SearchOption.TopDirectoryOnly);
+
+        foreach (string pdfPath in pdfFiles)
+        {
+            try
+            {
+                // Extract text using iText7 for accurate PDF parsing
+                using (PdfDocument document = PdfReader.Open(pdfPath, 
+                    PdfDocumentOpenMode.ReadOnly))
+                {
+                    contextBuilder.AppendLine($"=== CONTEXT FROM: " +
+                        $"{Path.GetFileName(pdfPath)} ===");
+                    // Text extraction implementation
+                    contextBuilder.AppendLine("=== END CONTEXT ===\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                contextBuilder.AppendLine($"Error loading PDF " +
+                    $"{Path.GetFileName(pdfPath)}: {ex.Message}");
+            }
+        }
+        return contextBuilder.ToString();
+    }
+}
+\end{verbatim}
+
+\subsection{3D printing pipeline components}
+
+\subsubsection{Slicer architecture overview}
+
+The 3D printing pipeline implements a complete toolchain from 3D geometry to production-ready G-code through five interconnected components: SlicerSettings, SliceGeometry, ShellGeometry, InfillGeometry, and GCodeGenerator.
+
+\subsubsection{Configuration management}
+
+The settings system provides comprehensive control over all slicing parameters:
+
+\begin{verbatim}
+public class SlicerSettings
+{
+    public double LayerHeight { get; set; } = 0.2;
+    public double WallOffset { get; set; } = 0.4;
+    public int NumShells { get; set; } = 2;
+    public double InfillSpacing { get; set; } = 10.0;
+    public double PrintSpeed { get; set; } = 1500.0;
+    public double NozzleDiameter { get; set; } = 0.4;
+    public double BedWidth { get; set; } = 200.0;
+    public double BedDepth { get; set; } = 200.0;
+    
+    // Advanced motion planning parameters
+    public bool UseArcInterpolation { get; set; } = true;
+    public double ArcTolerance { get; set; } = 0.05;
+    public double MinSegmentLength { get; set; } = 0.1;
+    public bool UseAdaptiveFeedRates { get; set; } = true;
+}
+\end{verbatim}
+
+\subsubsection{Geometry processing}
+
+The slicing component converts 3D Brep geometry into horizontal layer curves:
+
+\begin{verbatim}
+protected override void SolveInstance(IGH_DataAccess DA)
+{
+    // Center geometry on print bed
+    if (settings.BedWidth > 0 && settings.BedDepth > 0)
+    {
+        double centerX = (bbox.Min.X + bbox.Max.X) / 2.0;
+        double centerY = (bbox.Min.Y + bbox.Max.Y) / 2.0;
+        double bedCenterX = settings.BedWidth / 2.0;
+        double bedCenterY = settings.BedDepth / 2.0;
+        var translation = new Vector3d(bedCenterX - centerX, 
+                                     bedCenterY - centerY, 0);
+        sliceBrep.Transform(Transform.Translation(translation));
+    }
+    
+    // Generate layer curves through horizontal plane intersections
+    for (int i = 0; i < layerCount; i++)
+    {
+        double z = zmin + i * settings.LayerHeight;
+        var plane = new Plane(new Point3d(0, 0, z), Vector3d.ZAxis);
+        Intersection.BrepPlane(sliceBrep, plane, tol, 
+                             out Curve[] crvs, out Point3d[] pts);
+        layers.Add(crvs != null ? new List<Curve>(crvs) : 
+                   new List<Curve>());
+    }
+}
+\end{verbatim}
+
+\subsubsection{Shell and perimeter generation}
+
+Shell generation creates offset perimeter curves and identifies infill regions:
+
+\begin{verbatim}
+protected override void SolveInstance(IGH_DataAccess DA)
+{
+    for (int i = 0; i < layers.PathCount; i++)
+    {
+        // Generate shells through progressive curve offsetting
+        foreach (var ghc in branch)
+        {
+            var baseCurve = ghc?.Value;
+            if (baseCurve == null) continue;
+            for (int s = 0; s < settings.NumShells; s++)
+            {
+                double offsetDist = s * settings.WallOffset;
+                if (s == 0)
+                {
+                    shellTree.Append(new GH_Curve(
+                        baseCurve.DuplicateCurve()), path);
+                }
+                else
+                {
+                    var offs = baseCurve.Offset(plane, -offsetDist, tol, 
+                        CurveOffsetCornerStyle.Sharp);
+                    if (offs != null)
+                        foreach (var oc in offs)
+                            shellTree.Append(new GH_Curve(oc), path);
+                }
+            }
+        }
+    }
+}
+\end{verbatim}
+
+\subsubsection{Advanced motion planning and G-code generation}
+
+The G-code generator implements sophisticated motion planning with arc interpolation and path optimization:
+
+\begin{verbatim}
+// Arc detection and interpolation
+private static bool TryFitCircleRobust(List<Point3d> pts, double tol,
+    out Point3d center, out double radius, out bool clockwise)
+{
+    // Least-squares circle fitting implementation
+    int n = pts.Count;
+    if (n < 3) return false;
+    
+    double sumX = 0, sumY = 0, sumX2 = 0, sumY2 = 0, sumXY = 0;
+    double sumX3 = 0, sumY3 = 0, sumX2Y = 0, sumXY2 = 0;
+    
+    foreach (var pt in pts)
+    {
+        double x = pt.X, y = pt.Y;
+        sumX += x; sumY += y;
+        sumX2 += x * x; sumY2 += y * y; sumXY += x * y;
+        sumX3 += x * x * x; sumY3 += y * y * y;
+        sumX2Y += x * x * y; sumXY2 += x * y * y;
+    }
+    
+    // Solve for circle center using determinant method
+    double a = n * sumXY - sumX * sumY;
+    double b = n * sumX2 - sumX * sumX;
+    double c = n * sumY2 - sumY * sumY;
+    double det = a * a - b * c;
+    
+    if (Math.Abs(det) < 1e-12) return false;
+    // Calculate center and validate geometry
+}
+\end{verbatim}
+
+Advanced motion planning features include automatic detection and conversion of linear segments to G2/G3 arc commands, multiple smoothing algorithms including moving average and angular decimation, speed reduction for sharp corners and direction changes, and merging of tiny segments with splitting of overly long moves.
+
+\subsection{Serial communication system}
+
+\subsubsection{Cross-platform serial architecture}
+
+The serial communication system provides professional-grade 3D printer control with cross-platform compatibility through abstracted serial port implementations.
+
+\subsubsection{Platform abstraction layer}
+
+The system implements multiple serial port strategies for maximum compatibility:
+
+\begin{verbatim}
+internal interface ISerialPort
+{
+    bool IsOpen { get; }
+    event Action<string> DataReceived;
+    void Open();
+    void Close();
+    void WriteLine(string line);
+    void ClearBuffers();
+}
+
+// Windows implementation using SerialPortStream
+internal class WindowsSerialPort : ISerialPort
+{
+    private readonly SerialPortStream _port;
+    
+    public WindowsSerialPort(string path, int baudRate)
+    {
+        _port = new SerialPortStream(path, baudRate)
+        {
+            Parity = RJCP.IO.Ports.Parity.None,
+            DataBits = 8,
+            StopBits = RJCP.IO.Ports.StopBits.One,
+            Handshake = RJCP.IO.Ports.Handshake.None,
+            ReadTimeout = 1000,
+            WriteTimeout = 1000
+        };
+    }
+}
+
+// Unix implementation using direct file stream access
+internal class UnixSerialPort : ISerialPort
+{
+    private readonly string _path;
+    private readonly int _baudRate;
+    private FileStream _fs;
+    private Thread _readThread;
+    
+    public void Open()
+    {
+        // Configure port settings via stty system command
+        var psi = new ProcessStartInfo("stty", 
+            $"-f {_path} {_baudRate} cs8 -cstopb -parenb raw")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false
+        };
+        var p = Process.Start(psi);
+        p.WaitForExit();
+
+        _fs = new FileStream(_path, FileMode.Open, 
+            FileAccess.ReadWrite, FileShare.ReadWrite);
+        _running = true;
+        _readThread = new Thread(ReadLoop) { IsBackground = true };
+        _readThread.Start();
+    }
+}
+\end{verbatim}
+
+\subsubsection{Advanced printer communication}
+
+The main serial control component implements sophisticated print job management with buffer control and real-time visualization:
+
+\begin{verbatim}
+public class SerialControlComponent : GH_Component
+{
+    private ISerialPort _serialPort;
+    private List<string> _printCommands = new List<string>();
+    private int _currentLineIndex = 0;
+    private Thread _printThread;
+    private AutoResetEvent _ackEvent;
+    
+    // Enhanced communication with sliding window buffer management
+    private int _receiveCacheSize = 127;
+    private LinkedList<NackData> _ackWindow = new LinkedList<NackData>();
+    private readonly object _windowLock = new object();
+    
+    // Real-time path visualization
+    private List<Curve> _execTransSegs = new List<Curve>();
+    private List<Curve> _execExtrusionSegs = new List<Curve>();
+    private List<Curve> _unexecTransSegs = new List<Curve>();
+    private List<Curve> _unexecExtrusionSegs = new List<Curve>();
+}
+\end{verbatim}
+
+Advanced communication features include buffer management implementing sliding window protocol matching printer receive buffer capacity, optional line numbers with checksums for reliable transmission, automatic resend request handling and communication error recovery, and real-time visualization with live updating of executed vs. pending toolpath segments.
+
+\subsubsection{Enhanced G-code streaming with flow control}
+
+\begin{verbatim}
+// Intelligent buffer management for optimal throughput
+private bool TrySendNextLine2()
+{
+    if (_paused || _serialPort == null || !_serialPort.IsOpen) 
+        return false;
+    if (_currentLineIndex >= _printCommands.Count) return false;
+    
+    // Calculate pending buffer usage
+    int pending = 0;
+    lock (_windowLock)
+        foreach (var nd in _ackWindow) pending += nd.Length;
+        
+    // Respect printer buffer limits
+    if (pending >= _receiveCacheSize) return false;
+    
+    var cmd = _printCommands[_currentLineIndex].Trim();
+    string outCmd = (_useLineNumbers && IsBufferedCommand(cmd))
+        ? FormatCommandWithLineNumber(cmd, _expectedLineNumber++)
+        : cmd;
+        
+    var bytes = System.Text.Encoding.ASCII.GetBytes(outCmd + "\r\n");
+    _serialPort.WriteLine(outCmd);
+    
+    // Track command in sliding window
+    lock (_windowLock)
+        _ackWindow.AddLast(new NackData(bytes.Length));
+        
+    _currentLineIndex++;
+    return true;
+}
+\end{verbatim}
+
+\subsubsection{Real-time path editing and preview}
+
+The system includes sophisticated path editing capabilities through cross-platform preview windows implementing interactive editing with lasso selection of multiple path points for group editing, constraint handling with automatic clamping of edited points within printer build volume, real-time visualization with live updating of path modifications using color-coded segments, and orbit navigation providing full 3D viewport navigation with zoom, pan, and rotation.
+
+\subsection{Mesh processing and editing}
+
+\subsubsection{Cross-platform mesh editor}
+
+The mesh processing system provides interactive mesh editing capabilities through Eto.Forms-based interfaces with hand tracking integration.
+
+\subsubsection{Core mesh editing implementation}
+
+\begin{verbatim}
+public class MeshEditComponent : GH_Component
+{
+    private Mesh _mesh;
+    private Mesh _editedMesh;
+    private bool _hasEdits;
+
+    public override void CreateAttributes()
+    {
+        m_attributes = new ComponentButton(
+            this,
+            () => "✎",
+            ShowMeshEditDialog
+        );
+    }
+
+    private void ShowMeshEditDialog()
+    {
+        if (_mesh == null) return;
+        try
+        {
+            var form = new MeshEditForm(_mesh);
+            form.Closed += (s, e) =>
+            {
+                var edited = form.EditedMesh;
+                if (edited != null)
+                {
+                    _editedMesh = edited;
+                    _hasEdits = true;
+                    ExpireSolution(true);
+                }
+            };
+            form.Show();
+        }
+        catch (Exception ex)
+        {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, 
+                $"Error launching mesh editor: {ex.Message}");
+        }
+    }
+}
+\end{verbatim}
+
+\subsubsection{Advanced editing interface with hand tracking}
+
+The mesh editing form provides comprehensive mesh manipulation with optional hand tracking:
+
+\begin{verbatim}
+internal class MeshEditForm : Form
+{
+    private List<Point3d> _vertices;
+    private readonly List<int[]> _faces;
+    
+    // Multi-modal interaction support
+    private enum Mode { View, Edit, Hands }
+    private Mode _mode = Mode.View;
+    
+    // Hand tracking integration
+    private Process _handProcess;
+    private Thread _handTrackingThread;
+    private readonly PointF[] _handPoints = new PointF[21];
+    private bool _handDragging;
+    private readonly float _pinchThreshold = 60f;
+    
+    // Interactive selection and manipulation
+    private bool _isLassoing = false;
+    private List<PointF> _lassoPath = new List<PointF>();
+    private List<int> _selectedVertices = new List<int>();
+    private bool _isGroupDragging = false;
+}
+\end{verbatim}
+
+Advanced editing features include hand tracking integration using MediaPipe-based hand gesture control for touchless editing, lasso vertex selection enabling freehand selection of vertex groups for manipulation, real-time 3D projection with live vertex manipulation and immediate visual feedback, and cross-platform compatibility ensuring consistent interface across Windows and macOS.
+
+\subsubsection{Hand tracking implementation}
+
+\begin{verbatim}
+private void StartHandTracking()
+{
+    try
+    {
+        var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), 
+            "scripts", "meshedit", "hands.py");
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = "python3",
+            Arguments = $"-E \"{scriptPath}\" --headless",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        
+        _handProcess = Process.Start(startInfo);
+        _handTrackingThread = new Thread(() =>
+        {
+            bool pinched = false;
+            string line;
+            while (_handProcess != null && !_handProcess.HasExited && 
+                   (line = _handProcess.StandardOutput.ReadLine()) != null)
+            {
+                var parts = line.Split(' ');
+                if (parts.Length < 5) continue;
+                
+                // Parse hand landmark data and detect pinch gestures
+                if (float.TryParse(parts[0], out var tx) && 
+                    float.TryParse(parts[1], out var ty) &&
+                    float.TryParse(parts[4], out var dist))
+                {
+                    Application.Instance.Invoke(() =>
+                    {
+                        // Convert normalized coordinates to screen space
+                        var mx = (1 - (tx + ix) * 0.5f) * ClientSize.Width;
+                        var my = ((ty + iy) * 0.5f) * ClientSize.Height;
+                        var loc = new PointF(mx, my);
+                        
+                        // Detect pinch gesture and trigger mesh manipulation
+                        if (!pinched && dist < 0.08f)
+                        {
+                            pinched = true;
+                            if (_mode == Mode.Edit && _selectedVertices.Count > 0)
+                            {
+                                _isGroupDragging = true;
+                                _initialSelected = _selectedVertices
+                                    .Select(i => _vertices[i]).ToList();
+                                _dragRefZ = _initialSelected.Average(p => p.Z);
+                                _dragAnchorWorld = Unproject(loc, _dragRefZ);
+                            }
+                        }
+                    });
+                }
+            }
+        }) { IsBackground = true };
+        _handTrackingThread.Start();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Failed to start hand tracking: {ex}");
+    }
+}
+\end{verbatim}
+
+\subsection{Photogrammetry system}
+
+\subsubsection{Mobile device integration}
+
+The photogrammetry system provides complete 3D reconstruction from mobile device capture through integrated web server and RealityKit processing.
+
+\subsubsection{Complete reconstruction pipeline}
+
+\begin{verbatim}
+public class PhotogrammetryComponent : GH_Component
+{
+    // State management for asynchronous processing
+    private bool _serverStarted = false;
+    private bool _videoReceived = false;
+    private bool _processing = false;
+    private bool _finished = false;
+    
+    // Network server for mobile device communication
+    private int _port;
+    private string _videoPath;
+    private string _modelPath;
+    private System.Net.HttpListener _listener;
+    private Task _serverTask;
+    
+    // RealityKit processing parameters
+    private string _detail;
+    private string _sampleOrdering;
+    private string _featureSensitivity;
+}
+\end{verbatim}
+
+\subsubsection{Built-in web server for mobile connectivity}
+
+\begin{verbatim}
+private void StartServer()
+{
+    _port = GetFreePort();
+    _listener = new System.Net.HttpListener();
+    _listener.Prefixes.Add($"http://*:{_port}/");
+    
+    var ip = GetLocalIPAddress();
+    _listener.Prefixes.Add($"http://{ip}:{_port}/");
+    
+    try
+    {
+        _listener.Start();
+        _serverStarted = true;
+        
+        // Generate and display QR code for easy mobile connection
+        var url = GetServerUrl();
+        Application.Instance.Invoke(() =>
+        {
+            ShowQrCode(url);
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, 
+                $"Photogrammetry server listening at {url}");
+        });
+    }
+    catch (Exception ex)
+    {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, 
+            $"Failed to start server: {ex.Message}");
+        return;
+    }
+    
+    // Handle mobile device requests
+    _serverTask = Task.Run(() =>
+    {
+        while (_listener.IsListening)
+        {
+            try
+            {
+                var ctx = _listener.GetContext();
+                var req = ctx.Request;
+                var resp = ctx.Response;
+                
+                if (req.Url.AbsolutePath == "/upload")
+                {
+                    // Process video upload from mobile device
+                    HandleVideoUpload(req, resp);
+                }
+                else
+                {
+                    // Serve mobile-friendly upload interface
+                    ServeUploadPage(resp);
+                }
+            }
+            catch { break; }
+        }
+    });
+}
+\end{verbatim}
+
+\subsubsection{RealityKit integration and processing}
+
+\begin{verbatim}
+private void RunPhotogrammetry()
+{
+    Task.Run(() =>
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "gh_photogrammetry");
+        var framesDir = Path.Combine(dir, "frames");
+        Directory.CreateDirectory(framesDir);
+        
+        // Extract frames using FFmpeg
+        try
+        {
+            var psiF = new ProcessStartInfo("ffmpeg", 
+                $"-i \"{_videoPath}\" \"{framesDir}/frame_%04d.jpg\"")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var pF = Process.Start(psiF);
+            pF.WaitForExit();
+        }
+        catch (Exception e)
+        {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, 
+                "Error extracting frames: " + e.Message);
+        }
+        
+        // Run RealityKit photogrammetry processing
+        _modelPath = Path.Combine(dir, "model.usdz");
+        var exePath = Path.Combine(Directory.GetCurrentDirectory(), 
+            "scripts", "photogrammetry", "HelloPhotogrammetry");
+        
+        var parts = new List<string> { framesDir, _modelPath };
+        if (!string.IsNullOrWhiteSpace(_detail)) 
+            parts.Add("--detail " + _detail);
+        if (!string.IsNullOrWhiteSpace(_sampleOrdering)) 
+            parts.Add("--sample-ordering " + _sampleOrdering);
+        if (!string.IsNullOrWhiteSpace(_featureSensitivity)) 
+            parts.Add("--feature-sensitivity " + _featureSensitivity);
+        
+        try
+        {
+            var psiP = new ProcessStartInfo(exePath, string.Join(" ", parts))
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var pP = Process.Start(psiP);
+            pP.WaitForExit();
+            
+            if (pP.ExitCode == 0)
+            {
+                Application.Instance.Invoke(() => 
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, 
+                        $"Photogrammetry completed: {_modelPath}"));
+            }
+        }
+        catch (Exception e)
+        {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, 
+                "Error running photogrammetry: " + e.Message);
+        }
+        
+        _finished = true;
+        Eto.Forms.Application.Instance.Invoke(() => ExpireSolution(true));
+    });
+}
+\end{verbatim}
+
+Photogrammetry pipeline features include a mobile web interface with responsive HTML5 interface for video capture and upload, automatic frame extraction using FFmpeg integration for video-to-frame conversion, RealityKit processing providing native macOS photogrammetry using Apple's RealityKit framework, quality control with configurable detail levels and sample ordering and feature sensitivity, and seamless integration with automatic import of reconstructed models into Rhino workspace.
+
+\subsection{Component infrastructure and UI systems}
+
+\subsubsection{Custom Grasshopper UI components}
+
+The plugin implements sophisticated UI extensions for enhanced user interaction through custom component attributes and cross-platform interfaces.
+
+\subsubsection{Custom component interfaces}
+
+\begin{verbatim}
+// Custom button component for single-action controls
+internal class ComponentButton : GH_ComponentAttributes
+{
+    private readonly GH_Component _owner;
+    private readonly Func<string> _labelProvider;
+    private readonly Action _action;
+    private RectangleF _buttonBounds;
+    private bool _mouseDown;
+
+    protected override void Layout()
+    {
+        base.Layout();
+        const int margin = 3;
+        var bounds = GH_Convert.ToRectangle(Bounds);
+        var button = bounds;
+        button.X += margin;
+        button.Width -= margin * 2;
+        button.Y = bounds.Bottom;
+        button.Height = 18;
+        bounds.Height += button.Height + margin;
+        Bounds = bounds;
+        _buttonBounds = button;
+    }
+
+    protected override void Render(GH_Canvas canvas, Graphics graphics, 
+                                 GH_CanvasChannel channel)
+    {
+        base.Render(canvas, graphics, channel);
+        if (channel == GH_CanvasChannel.Objects)
+        {
+            var font = GH_FontServer.NewFont(GH_FontServer.StandardAdjusted, 
+                6f / GH_GraphicsUtil.UiScale);
+            var radius = 3;
+            var highlight = !_mouseDown ? 8 : 0;
+            using var capsule = GH_Capsule.CreateTextCapsule(_buttonBounds, 
+                _buttonBounds, GH_Palette.Black, _labelProvider(), 
+                font, radius, highlight);
+            capsule.Render(graphics, false, _owner.Locked, false);
+        }
+    }
+}
+\end{verbatim}
+
+\subsubsection{Cross-platform serial port detection}
+
+\begin{verbatim}
+public class PortParam : GH_ValueList
+{
+    private string _lastSelectedPort = string.Empty;
+    private bool _debugMode = true;
+    
+    // Multi-method port detection for maximum compatibility
+    private string[] GetPortsMultiMethod()
+    {
+        List<string> allPorts = new List<string>();
+        
+        // Method 1: Cross-platform SerialPortStream
+        try
+        {
+            string[] streamPorts = SerialPortStream.GetPortNames();
+            if (streamPorts.Length > 0)
+            {
+                allPorts.AddRange(streamPorts);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"SerialPortStream error: {ex.Message}");
+        }
+        
+        // Method 2: Standard .NET SerialPort for Windows
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                string[] netPorts = System.IO.Ports.SerialPort.GetPortNames();
+                foreach (var port in netPorts)
+                {
+                    if (!allPorts.Contains(port, StringComparer.OrdinalIgnoreCase))
+                        allPorts.Add(port);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"System.IO.Ports error: {ex.Message}");
+            }
+        }
+        
+        // Method 3: Direct filesystem access for Unix systems
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                string[] unixPorts = GetUnixPortNames();
+                foreach (var port in unixPorts)
+                {
+                    if (!allPorts.Contains(port, StringComparer.OrdinalIgnoreCase))
+                        allPorts.Add(port);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unix ports error: {ex.Message}");
+            }
+        }
+        
+        return allPorts.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+    }
+
+    // Unix-specific port detection with comprehensive device coverage
+    private static string[] GetUnixPortNames()
+    {
+        var list = new List<string>();
+        
+        // macOS/FreeBSD: cu.* devices for outgoing connections
+        try
+        {
+            if (Directory.Exists("/dev"))
+            {
+                var filesCu = Directory.GetFiles("/dev", "cu.*");
+                list.AddRange(filesCu.Select(Path.GetFileName));
+                
+                var filesTty = Directory.GetFiles("/dev", "tty.*");
+                list.AddRange(filesTty.Select(Path.GetFileName));
+            }
+        }
+        catch (Exception ex) 
+        { 
+            Debug.WriteLine($"Error listing cu./tty.* devices: {ex.Message}");
+        }
+        
+        // Linux: USB-to-serial adapters and Arduino devices
+        try
+        {
+            if (Directory.Exists("/dev"))
+            {
+                var filesUsbTty = Directory.GetFiles("/dev", "ttyUSB*");
+                list.AddRange(filesUsbTty.Select(Path.GetFileName));
+                
+                var filesAcmTty = Directory.GetFiles("/dev", "ttyACM*");
+                list.AddRange(filesAcmTty.Select(Path.GetFileName));
+            }
+        }
+        catch (Exception ex) 
+        { 
+            Debug.WriteLine($"Error listing ttyUSB/ACM devices: {ex.Message}");
+        }
+        
+        // Ensure absolute paths for Unix devices
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (!list[i].StartsWith("/dev/"))
+                list[i] = "/dev/" + list[i];
+        }
+        
+        return list.ToArray();
+    }
+}
+\end{verbatim}
+
+\subsection{Plugin architecture and assembly management}
+
+\subsubsection{Plugin metadata and configuration}
+
+\begin{verbatim}
+public class ArsPostFaberInfo : GH_AssemblyInfo
+{
+    public new const string AssemblyVersion = "1.0.0.0";
+    public const string AssemblyFileVersion = "1.0.0.0";
+    
+    public override string Name => "ArsPostFaber";
+    public override Guid Id => new Guid("559c2a24-6cde-4e4d-b55c-6e9d85cf39a8");
+    public override string AuthorName => "Jorge Muyo";
+    public override string AuthorContact => "https://github.com/jmuozan";
+    public override string Description => "Digital Fabrication Tools for " +
+        "Grasshopper - Drawing, Slicing, Serial Control, and Photogrammetry";
+}
+\end{verbatim}
+
+\subsubsection{Project configuration and dependencies}
+
+The plugin's \texttt{.csproj} file demonstrates sophisticated cross-platform targeting and dependency management:
+
+\begin{verbatim}
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net7.0</TargetFrameworks>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <TargetExt>.gha</TargetExt>
+        <NoWarn>NU1701;NETSDK1086</NoWarn>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <!-- Core Dependencies -->
+        <PackageReference Include="Grasshopper" Version="8.0.23304.9001" 
+                         ExcludeAssets="runtime" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        
+        <!-- Serial Communication -->
+        <PackageReference Include="System.IO.Ports" Version="7.0.0" />
+        <PackageReference Include="SerialPortStream" Version="2.4.2" />
+        
+        <!-- Cross-platform UI -->
+        <PackageReference Include="Eto.Forms" Version="2.5.1" />
+        <PackageReference Include="Eto.Platform.Mac64" Version="2.5.1" />
+        
+        <!-- QR code generation -->
+        <PackageReference Include="QRCoder" Version="1.4.3" />
+        
+        <!-- Code Analysis for LLM components -->
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" 
+                         Version="4.5.0" />
+        
+        <!-- PDF Processing -->
+        <PackageReference Include="PdfSharp" Version="6.1.1" />
+        <PackageReference Include="itext7" Version="7.2.5" />
+    </ItemGroup>
+</Project>
+\end{verbatim}
+
+\subsection{Technical limitations and architectural considerations}
+
+\subsubsection{Cross-platform compatibility challenges}
+
+The implementation addresses several platform-specific challenges. For serial communication, Windows systems use \texttt{SerialPortStream} for enhanced compatibility with USB-to-serial adapters, while Unix systems implement direct FileStream access with \texttt{stty} configuration for maximum control, and automatic port detection handles different device naming conventions across platforms.
+
+UI framework integration presents challenges where Eto.Forms provides cross-platform UI but requires careful handling of platform-specific features, hand tracking integration depends on Python MediaPipe availability and camera permissions, and QR code generation uses cross-platform libraries but display handling varies by OS.
+
+File system access considerations include path handling that accounts for Unix vs. Windows file system differences, temporary file management that respects platform-specific conventions, and external process launching that handles different shell environments.
+
+\subsubsection{Performance optimization strategies}
+
+Memory management includes careful disposal of graphics resources in custom UI components, streaming-based processing for large G-code files to minimize memory footprint, and efficient mesh representation for real-time editing operations.
+
+Asynchronous operations use HTTP client operations with proper async/await patterns and cancellation support, serial communication implements background threads with proper synchronization, and file I/O operations avoid blocking the Grasshopper UI thread.
+
+Computational efficiency includes G-code generation using optimized algorithms for path simplification and arc detection, mesh editing maintaining spatial indices for efficient vertex selection, and preview rendering implementing view frustum culling and level-of-detail management.
+
+\subsubsection{Security and reliability considerations}
+
+Network communication uses HTTP server for photogrammetry with local network binding only, input validation for all external data sources including files and network requests, and proper error handling for network timeouts and connection failures.
+
+Process management includes external Python processes with timeout handling and proper cleanup, serial communication implementing buffer overflow protection, and file operations including comprehensive exception handling.
+
+Data validation encompasses G-code parsing with syntax validation and bounds checking, mesh geometry validation preventing invalid topology creation, and component compilation including security restrictions on generated code.
+
+\subsection{Usage guidelines and best practices}
+
+\subsubsection{Component workflow optimization}
+
+For AI component generation, users should use specific, technically accurate descriptions for best code generation results, leverage PDF context loading by placing reference materials in the plugin directory, and utilize agent mode for iterative refinement of complex components.
+
+The 3D printing pipeline workflow should begin with SlicerSettings component to establish baseline parameters, use progressive testing through slice, shell, infill, and G-code generation stages, and optimize settings based on printer capabilities and material requirements.
+
+Serial communication best practices include verifying port selection using the integrated port dropdown before connecting, using preview and editing features to validate toolpaths before printing, and monitoring buffer status while adjusting print parameters for optimal flow control.
+
+Mesh processing workflows should start with mesh validation to ensure clean topology before editing, use lasso selection for efficient multi-vertex operations, and consider hand tracking for intuitive sculptural mesh modification.
+
+For photogrammetry, users should ensure adequate lighting and object coverage during video capture, use QR code connection for seamless mobile device integration, and adjust quality settings based on processing time requirements versus output fidelity.
+
+\subsubsection{Integration with external tools}
+
+The development workflow includes source code organization following standard .NET project structure, build system supporting both Visual Studio and command-line compilation, and debugging support through Visual Studio with Rhino process attachment.
+
+Extension points include custom serial protocols implemented through the \texttt{ISerialPort} interface, additional mesh editing tools extending the base \texttt{MeshEditForm} class, and new AI model providers implementing the \texttt{GH\_Component\_HTTPAsync} base class.
+
+\subsection{Technical implementation insights}
+
+The implementation showcases several advanced techniques that demonstrate sophisticated software engineering practices within the Grasshopper plugin ecosystem.
+
+\subsubsection{Asynchronous programming patterns}
+
+The plugin makes extensive use of modern asynchronous programming patterns to maintain UI responsiveness while performing computationally intensive operations:
+
+\begin{verbatim}
+// Example from AI component generation
+protected void POSTWithHeadersAsync(string url, string body, 
+    Dictionary<string, string> headers, int timeout)
+{
+    try
+    {
+        var client = new System.Net.Http.HttpClient 
+        { 
+            Timeout = TimeSpan.FromMilliseconds(timeout) 
+        };
+        
+        var content = new System.Net.Http.StringContent(body, 
+            Encoding.UTF8, "application/json");
+        
+        Task.Run(async () =>
+        {
+            try
+            {
+                var resp = await client.PostAsync(url, content)
+                    .ConfigureAwait(false);
+                string respBody = await resp.Content.ReadAsStringAsync()
+                    .ConfigureAwait(false);
+                
+                if (resp.IsSuccessStatusCode)
+                {
+                    _response = respBody;
+                    _currentState = RequestState.Done;
+                }
+                else
+                {
+                    _response = $"HTTP Error {(int)resp.StatusCode} " +
+                        $"{resp.ReasonPhrase}: {respBody}";
+                    _currentState = RequestState.Error;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response = ex.Message;
+                _currentState = RequestState.Error;
+            }
+            finally
+            {
+                _shouldExpire = true;
+                ExpireSolution(true);
+                client.Dispose();
+            }
+        });
+    }
+    catch (Exception ex)
+    {
+        _response = ex.Message;
+        _currentState = RequestState.Error;
+        _shouldExpire = true;
+        ExpireSolution(true);
+    }
+}
+\end{verbatim}
+
+This pattern ensures that long-running operations like AI model inference, file I/O, and network communication do not block the Grasshopper UI thread, maintaining application responsiveness during complex operations.
+
+\subsubsection{Cross-platform architectural strategies}
+
+The plugin's approach to cross-platform compatibility demonstrates sophisticated architectural planning:
+
+\begin{verbatim}
+// Platform-specific initialization in serial communication
+private void InitializeSerialPort(string portName, int baudRate)
+{
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        _serialPort = new WindowsSerialPort(portName, baudRate);
+    else
+        _serialPort = new UnixSerialPort(
+            portName.StartsWith("/") ? portName : 
+            Path.Combine("/dev", portName), baudRate);
+}
+\end{verbatim}
+
+This strategy allows the plugin to leverage platform-specific optimizations while maintaining a unified programming interface across different operating systems.
+
+\subsection{Conclusion}
+
+The \textit{Ars Post Faber} plugin demonstrates a comprehensive approach to digital fabrication tooling within the Grasshopper environment. Through careful architectural design, cross-platform compatibility considerations, and integration of advanced technologies including AI-powered code generation, real-time serial communication, and mobile device connectivity, the plugin provides a complete ecosystem for parametric design to physical production workflows.
+
+The modular architecture enables both standalone use of individual components and integrated workflows spanning the entire fabrication pipeline. The extensive use of modern .NET technologies, cross-platform UI frameworks, and sophisticated communication protocols positions the plugin as a robust foundation for future digital fabrication research and development.
+
+The open-source nature of the project, combined with comprehensive technical documentation and extensible architecture, facilitates both academic research applications and practical implementation in educational and professional environments. The plugin's approach to preserving designer agency through interactive editing capabilities while leveraging AI assistance for component development exemplifies the thesis's core argument for balanced human-AI collaboration in digital fabrication workflows.
+
+The technical implementation demonstrates that sophisticated digital fabrication tools can be successfully integrated into parametric design environments while maintaining the flexibility and creative control that designers require. The plugin's architecture provides a foundation for future research into the intersection of AI assistance, parametric design, and digital fabrication, supporting the thesis's broader investigation into post-artisan design methodologies.
