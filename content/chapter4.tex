@@ -17,7 +17,7 @@
 
 % Custom chapter title to match abstract formatting
 \noindent
-{\Large\textbf{Chapter 4: Ars Post Faber: Moving towards unified digital agency}}
+{\Large\textbf{Chapter 4: Ars Post Faber}}
 \vspace{0.3cm}
 \hrule
 \vspace{0.8cm}
@@ -30,21 +30,17 @@
 
 \vspace{0.5cm}
 
-The theoretical framework developed in the previous chapters culminates in a practical question: \textit{How might digital design tools be restructured to preserve the dialogue between maker, material, and machine that has characterized unified agency?} This chapter documents the development of \textit{Ars Post Faber}, an open-source Grasshopper plugin that attempts to bridge the gap between the conception-execution separation identified in contemporary CAD/CAM workflows.
+The theoretical framework developed in the previous chapters culminates the thinking of \textit{How can digital design tools be restructured to preserve the dialogue between maker, material, and machine?} This chapter documents the development of \textit{Ars Post Faber}, an open-source Grasshopper plugin that attempts to bridge the gap between the conception-execution separation identified in contemporary CAD/CAM workflows.
 
 \vspace{0.5cm}
 
-Drawing from the experimental insights gathered through \textit{CR3ATED}, \textit{AI Tools}, and the \textit{Component that Makes}, \textit{Ars Post Faber} represents an integrated approach to preserve embodied knowledge within digital design and fabrication contexts. Rather than simplifying tools to increase accessibility or automating processes to eliminate complexity, the plugin introduces new forms of interaction that maintain the computational sophistication while enabling the adaptive authority of skilled practice.
+Drawing from the experimental insights gathered through \textit{CR3ATED}, \textit{AI Tools}, and the \textit{Component that Makes}, \textit{Ars Post Faber} represents an integrated approach to preserve embodied knowledge within digital design and fabrication contexts. Rather than simplifying tools to increase accessibility or automating processes to eliminate complexity, the plugin introduces new forms of interaction that attempt to maintain the computational sophistication while enabling the adaptive authority of skilled practice.
 
 \vspace{0.5cm}
 
-The name \textit{Ars Post Faber} references both historical craft traditions and contemporary technological possibilities. \textit{Ars}, from the Latin meaning skill or craft, acknowledges the continuity with traditional making practices that this research seeks to preserve. \textit{Post Faber}, meaning "after the maker," suggests not the elimination of human creative agency but its transformation within digitally-mediated contexts. This represents neither a nostalgic return to pre-industrial craft nor a wholesale embrace of automated production, but rather an exploration of how contemporary computational capabilities might support the adaptive decision-making that enables skilled making.
+The name \textit{Ars Post Faber} references both historical craft traditions and contemporary technological possibilities. \textit{Ars}, from the Latin meaning skill or craft, acknowledges the continuity with traditional making practices that this research seeks to preserve. \textit{Post Faber}, meaning "after the maker," suggests not the elimination of human creative agency but its transformation within digitally-mediated contexts. This represents neither a nostalgic return to pre-industrial craft nor a wholesale embrace of automated production, but an exploration of how contemporary computational capabilities might support the adaptive decision-making that enables skilled making.
 
 \section{Design principles}
-
-The development of \textit{Ars Post Faber} required translating the theoretical insights about unified agency, preservation-based democratization, and adaptive authority into specific design principles that could guide software implementation. This translation process presented the challenge of maintaining theoretical coherence while addressing the practical constraints and opportunities present within existing CAD environments.
-
-\subsection{Preserving process over product}
 
 As explored along this work, traditional CAD workflows prioritize the efficient production of geometric specifications suitable for manufacturing, treating the design process itself as expendable scaffolding that can be discarded once final specifications are determined. This product-centered approach aligned with the model of distributed agency, concentrates creative authority within separate design phases.
 
@@ -54,98 +50,70 @@ As explored along this work, traditional CAD workflows prioritize the efficient 
 
 \section{Unclosed workflows}
 
-The most important addition within \textit{Ars Post Faber} lies not in its individual features but in its approach to workflow continuity. Where traditional CAD or CAM systems create discrete operational phases that end up fragmenting the creative authority, the plugin implements \textit{unclosed workflows}, processes that attempt to maintain live connections between digital design, physical fabrication, and human decision-making throughout the entire making cycle, and holistic approach to conception and execution.
+The most important addition within \textit{Ars Post Faber} lies not in its individual features but in its approach to workflow continuity. Where traditional CAD or CAM systems create discrete operational phases that end up fragmenting the creative authority, the plugin implements unclosed workflows, processes that attempt to maintain live connections between digital design, physical fabrication, and human decision-making throughout the entire making cycle, and holistic approach to conception and execution.
 
 \vspace{0.5cm}
 
-These unclosed workflows look to challenge current ways of working with digital fabrication that require predetermined specifications locked in before material execution begins. Instead, looking to preserve the capacity for real-time modification, contextual adaptation, and responsive intervention while still leveraging on the same contemporary computational capabilities.
+These unclosed workflows look to challenge current ways of working with digital fabrication that require predetermined specifications locked in before material execution begins. Instead, looking to preserve the capacity for real-time modification, contextual adaptation, and responsive intervention while using tthe machines.
 
 \subsection{Live serial control}
 
-The Serial Control component represents a distance from conventional G-code streaming approaches by implementing live editing capabilities during fabrication. Rather than treating G-code as a static sequence of predetermined commands, the component enables makers to modify, pause, and adapt fabrication instructions in real-time response to material conditions, unexpected discoveries, or emerging creative insights.
+The Serial Control component tries to distance itself from conventional G-code streaming approaches by implementing live editing capabilities during fabrication. Rather than treating G-code as a static sequence of predetermined commands, the component enables makers to modify, pause, and adapt fabrication instructions in real-time response to material conditions, unexpected discoveries, or emerging creative insights.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/chapter4/serial.png}
+\caption{Serial component. Source: Author}
+\label{fig:serial}
+\end{figure}
+
+This live connection transforms the relationship between digital design and physical execution from a one-way translation process into a continuous dialogue. The maker maintains agency throughout fabrication, able to observe material feedback, assess emergent conditions, and modify subsequent actions accordingly. The preview editor enables visual manipulation of upcoming toolpaths, while the serial connection preserves the ability to pause, modify, and resume fabrication without losing the creative thread. This approach acknowledges that fabrication is inherently experimental, material reality introduces variables that cannot be fully predicted in digital space. 
+
+\subsection{Iterative slicing}
+
+Unlike traditional slicers that generate complete toolpaths before fabrication begins, the Slicer components created treat slicing as an ongoing creative dialogue, combining with the previous serial component.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{figures/chapter4/slicer_comp.png}
+\caption{Slicer component. Source: Author}
+\label{fig:slicer}
+\end{figure}
+
+
+Exploring xcreative decision-making in additive manufacturing during the model model translation into physical reality. Traditional slicing algorithms optimize for mechanical efficiency (minimizing print time, material usage, and structural failure), this approach instead, enables makers to use slicing decisions as expressive choices that affect the character of the final object.
 
 \vspace{0.5cm}
 
-This live connection transforms the relationship between digital design and physical execution from a one-way translation process into a continuous dialogue. The maker maintains agency throughout fabrication, able to observe material feedback, assess emergent conditions, and modify subsequent actions accordingly. The preview editor enables visual manipulation of upcoming toolpaths, while the serial connection preserves the ability to pause, modify, and resume fabrication without losing the creative thread.
-
-\vspace{0.5cm}
-
-More importantly, this approach acknowledges that fabrication is inherently experimental. Even with sophisticated simulation and planning, material reality introduces variables that cannot be fully predicted in digital space. By maintaining live connection and editing capabilities, the workflow preserves the maker's capacity to answer these emergent conditions rather than forcing predetermined execution regardless of circumstances.
-
-\subsection{Iterative slicing, design through making}
-
-The Slicer components created, rethink slicing from a preprocessing step into an active design methodology. Unlike traditional slicers that generate complete toolpaths before fabrication begins, \textit{Ars Post Faber} treats slicing as an ongoing creative dialogue.
-
-\vspace{0.5cm}
-
-This approach emerges from recognizing that the most interesting creative decisions in additive manufacturing often happen not in the initial 3D model but in how that model gets translated into physical reality. Traditional slicing algorithms optimize for mechanical efficiency (minimizing print time, material usage, and structural failure), the iterative approach instead prioritizes creative agency, enabling makers to use slicing decisions as expressive choices that affect the character of the final object.
-
-\vspace{0.5cm}
-
-The slicer's live editing capabilities enable makers to treat infill patterns and shell thicknesses not as technical requirements but as creative variables. A maker might begin with standard parameters, observe how the first few layers develop, then modify infill density to create internal voids that become design features, or adjust shell counts to create translucency effects that were not visible in the original digital model. The slicing process becomes a form of real-time sculptural decision-making.
-
+The slicer's live editing capabilities, through drag and drop, enable makers to treat infill patterns and shell thicknesses as creative variables. A maker might begin with standard parameters, observe how the first few layers develop, then modify infill density to create internal voids that become design features, or adjust shell counts to create translucency effects that were not visible in the original digital model. 
 
 \section{Embodied interactions} 
 
-\textit{Ars Post Faber} looks out to extend the concept of unclosed workflows into new forms of human-computer interactions. These interactions try to challenge the assumption that digital design requires adaptation to predetermined interface logic, instead enabling more direct translation of embodied understanding into computational action.
+\textit{Ars Post Faber} looks out to extend the concept of unclosed workflows into new ways of human-computer interactions, trying to challenge the assumption that digital design requires adaptation to predetermined interface logic.
 
 \subsection{Mesh editing as spatial dialogue}
 
-The mesh editing capabilities within the preview system attempt to extend embodied interactions into spatial manipulation. Instead of requiring geometric modification through parametric controls or numerical input, the system enables direct manipulation of form through gestures, acknowledging that much of the embodied knowledge works through spatial intuition rather than mathematical precision. By enabling direct manipulation of mesh geometry, the system preserves the maker's capacity to work through spatial relationships, proportion, and formal development without requiring translation through abstract parametric systems.
-
-\vspace{0.5cm}
-
-This mesh editing interface supports both traditional mouse-based interaction and gesture-based control, enabling makers to choose interaction modes that correspond to their individual working methods and the specific demands of each task. This flexibility preserves multiple ways of knowing rather than imposing constraints.
+The mesh editing capabilities within the preview system attempt to extend embodied interactions into spatial manipulation. Instead of requiring geometric modification through parametric controls or numerical input, the system enables direct manipulation of form through gestures, acknowledging that much of the embodied knowledge works through spatial intuition translatin it into abstract parametric systems.
 
 \section{From atoms to bits}
 
-One of the most interesting ways of working using \textit{Ars Post Faber} lies in its integration of photogrammetry as a creative tool instead of a merely documentary tool. This tries to set a reconceptualization of the relationship between physical and digital making, treating the boundary between atoms and bits as difusse instead of absolute.
-
-\subsection{From documentation to creation}
-
-Traditional photogrammetry applications focus on accurate documentation of existing objects or spaces, treating the physical world as a source of data to be captured and digitized. \textit{Ars Post Faber} looks to change this relationship by treating photogrammetry as a creative tool that enables continuous dialogue during the making process.
+One of the most interesting ways of working using \textit{Ars Post Faber} lies in its integration of photogrammetry as a creative tool instead of a merely documentary tool. This tries to set a reconceptualization of the relationship between physical and digital making, difussing the boundary between atoms and bits.
 
 \vspace{0.5cm}
 
-The photogrammetry component enables makers to capture physical work in progress, translate it into editable digital geometry, modify and develop it through computational tools, and then return to physical making with enhanced understanding and expanded possibilities, creating a circular workflow where physical and digital making inform each other.
+The photogrammetry component enables makers to capture physical work in progress, translate it into editable digital geometry, modify and develop it through computational tools, and then return to physical making with enhanced understanding and expanded possibilities, creating a circular workflow where physical and digital making inform each other, acknowledging that physical making often generates insights, discoveries, and formal developments that would be difficult or impossible to achieve through purely digital means. By enabling rapid translation from physical to digital contexts, the workflow preserves these emergent discoveries while enabling their further development through computation.
 
 \vspace{0.5cm}
 
-This approach recognizes that physical making often generates insights, discoveries, and formal developments that would be difficult or impossible to achieve through purely digital means. By enabling rapid translation from physical to digital contexts, the workflow preserves these emergent discoveries while enabling their further development through computation.
+\textit{Ars Post Faber} enables a domain fluid making, where the boundary between physical and digital work becomes irrelevant to the creative process, reflecting this work central argument considering that genuine democratization requires preserving the continuity of creative decision-making. By enabling fluid translation between physical and digital domains, the plug-in preserve the maker's capacity to work across all available creative resources instead of being constrained by technological boundaries.
 
-\subsection{Real-time translation between domains}
-
-The mobile-friendly photogrammetry interface developed looks to enable real-time capture and processing, reducing the temporal gap between physical making and digital development. Makers can capture physical work, receive processed digital models, and continue development within minutes, beign this temporal reduction important for maintaining continuity, evitating delays that can disrupt the creative flow such as working in separate physical and digital sessions.
-
-\vspace{0.5cm}
-
-The real-time translation capabilities enable new forms of hybrid making where physical and digital tools are used simultaneously. Makers can begin with physical materials, capture and digitize intermediate results, develop them further through computational tools, and return to physical making with enhanced understanding and expanded formal possibilities.
-
-\section{Dissolving the physical-digital boundary}
-
-The integration of live serial control, iterative slicing, embodied mesh editing, and real-time photogrammetry within \textit{Ars Post Faber} enables a domain fluid making, where the boundary between physical and digital work gets diffusedc and ultimately irrelevant to the creative process.
-
-\vspace{0.5cm}
-
-This dissolution of boundaries reflecting this work central argument suggesting that genuine democratization requires preserving the continuity of creative decision-making. By enabling fluid translation between physical and digital domains, \textit{Ars Post Faber} attempts to preserve the maker's capacity to work across all available creative resources instead of being constrained by technological boundaries.
-
-\vspace{0.5cm}
-
-The result is an environment that showcases how contemporary computational capabilities can support unified agency—where human creative authority remains responsive and adaptive throughout the entire making process, from initial conception through final material realization.
-
-\section{Technical implementation strategy}
-
-\subsection{Plugin architecture and computational transparency}
+\section{Open source foundation and community authority}
 
 The plugin operates through computational augmentation rather than automation. Each component works as a mediator expanding human creative capabilities while preserving decision-making authority throughout the fabrication process. Integration with Grasshopper leverages the platform's node-based visual programming environment to maintain transparency in computational processes. Unlike black-box systems that hide their operational logic, Grasshopper's visual programming approach enables makers to understand, modify, and extend the computational relationships that connect design intentions with fabrication outcomes.
 
 \vspace{0.5cm}
 
-Grasshopper functions as a computational puzzle where makers retain complete control over how and when to deploy specific tools. Rather than following predetermined workflows, makers can construct their own "scripts" by connecting nodes in sequences that reflect their individual creative logic and material understanding. This transparency supports the adaptive authority essential for unified agency while preserving multiple pathways for creative expression.
-
-\subsection{Open source foundation and community authority}
-
-\textit{Ars Post Faber} is released under the MIT License, representing a commitment to genuine democratization through community control over technological development rather than concentrating it within proprietary systems. The MIT License text explicitly defines the parameters of this collaborative approach:
+Within this context, \textit{Ars Post Faber} is released under the MIT License, representing a commitment to genuine democratization through community control. The MIT License text explicitly defines the parameters of this collaborative approach:
 
 \vspace{0.5cm}
 
@@ -179,4 +147,4 @@ This licensing framework empowers makers to build upon each other's work in ways
 
 \vspace{0.5cm}
 
-The collaborative development model that lives in open source software in a way mirrors the guild-like knowledge sharing that characterized pre-industrial craft communities. However, rather than being constrained by geographic proximity or trade boundaries, digital collaboration enables global communities of makers to collectively develop fabrication tools or interactions that preserve and extend their creative expression in contemporary computation, representing a form of \textit{distributed intelligence}, where individual makers contribute specialized knowledge across diverse cultural and technological contexts.
+The collaborative development model that lives in open source software in a way looks to mirror the guild knowledge sharing that characterized pre-industrial craft communities. However, instead of being constrained by geographic proximity or trade boundaries, digital collaboration enables global communities of makers to collectively develop fabrication tools or interactions that preserve and extend their creative expression representing a distributed intelligence.
