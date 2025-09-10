@@ -35,7 +35,9 @@ The code for this project can be found opened under an MIT license on the follow
 
 \subsection{System architecture overview}
 
-The system implemented a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), progressively building from data collection to real-time prediction capabilities.
+The system implemented a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), building from data collection to real-time prediction capabilities.
+
+\vspace{0.5cm}
 
 Technology stack:
 \begin{enumerate}
@@ -47,11 +49,18 @@ Technology stack:
 
 This system captures 225-dimensional feature vectors from pose and hand landmarks, processes sequences through LSTM networks, and provides real-time feedback about movement correctness.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/mp_points.png}
+\caption{Points detected. Source: }
+\label{fig: mp_points}
+\end{figure}
+
 \subsection{Data collection and MediaPipe integration}
 
 \subsubsection{Library setup and MediaPipe configuration}
 
-MediaPipe's holistic model ids used to do a simultaneous pose and hand tracking.
+MediaPipe's holistic model was used to do a simultaneous pose and hand tracking.
 
 \begin{verbatim}
 import mediapipe as mp
@@ -87,11 +96,9 @@ with mp_pose.Pose(min_detection_confidence=0.5,
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 \end{verbatim}
 
-The detection confidence thresholds of 0.5 looks to balance accuracy and speed, maintaining consistency across frames.
+The detection confidence thresholds of 0.5 looked to balance accuracy and processing speed across frames.
 
 \subsubsection{Feature extraction system}
-
-As mentioned, the system extracts 225-dimensional feature vectors from each frame, creating a representation of body posture and hand positions for each video frame
 
 \begin{verbatim}
 def extract_keypoints(results):
@@ -132,11 +139,25 @@ elif key == ord('q'):  # Quit application
     break
 \end{verbatim}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/PS_Keyboard.png}
+\caption{Points detected. Source: Author}
+\label{fig: keyboard}
+\end{figure}
+
 \subsection{Data processing and neural network training}
 
 \subsubsection{Data consolidation and labeling}
 
 After labeling multiple recording sessions, these are combined into a unified training dataset.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/Folder_structure.png}
+\caption{Points detected. Source: Author}
+\label{fig: folder_structure}
+\end{figure}
 
 \begin{verbatim}
 # Combine multiple data collection sessions
@@ -153,7 +174,7 @@ data['label'] = data.iloc[:, 0].astype(str) + '_' + data['accuracy']
 
 \subsubsection{LSTM neural network architecture}
 
-The classification system uses a three-layer bidirectional LSTM architecture for temporal sequence recognition:
+The classification system used a three-layer bidirectional LSTM architecture for temporal sequence recognition.
 
 \begin{verbatim}
 from tensorflow.keras.models import Sequential
@@ -189,43 +210,11 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'])
 \end{verbatim}
 
-This bidirectional LSTM processes sequences in both forward and backward directions, capturing temporal dependencies in movement patterns.
-
-\subsubsection{Training configuration with callbacks}
-
-Training uses callbacks for learning control and model optimization:
-
-\begin{verbatim}
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-
-# Configure training callbacks
-early_stopping = EarlyStopping(monitor='val_accuracy', 
-                               patience=20, 
-                               restore_best_weights=True)
-
-checkpoint = ModelCheckpoint('best_model.keras', 
-                            save_best_only=True, 
-                            monitor='val_accuracy', 
-                            mode='max')
-
-reduce_lr = ReduceLROnPlateau(monitor='val_loss', 
-                             factor=0.2, 
-                             patience=5, 
-                             min_lr=0.0001)
-
-# Execute training with monitoring
-history = model.fit(X_train, y_train, 
-                   validation_split=0.2, 
-                   epochs=2000, 
-                   batch_size=32,
-                   callbacks=[early_stopping, checkpoint, reduce_lr])
-\end{verbatim}
-
 \subsection{Real-time prediction system}
 
 \subsubsection{Live processing pipeline}
 
-To test the results of the training a real-time detection system is created, integrating MediaPipe detection with the trained model inference:
+To test the results of the training a real-time detection system was created, integrating MediaPipe detection with the trained model inference:
 
 \begin{verbatim}
 def mediapipe_detection(image, model):
@@ -249,11 +238,11 @@ def draw_styled_landmarks(image, results, incorrect_movement):
             mp_drawing.DrawingSpec(color=color, thickness=2))
 \end{verbatim}
 
-The system provides visual feedback through color-coded landmark rendering - green for correct movements, red for incorrect ones.
+The system provided visual feedback through color-coded landmark rendering - green for correct movements, red for incorrect ones.
 
 \subsubsection{Rolling buffer for temporal context}
 
-This real-time prediction system maintains temporal context through a frame buffer capturing and saving a set of frames and rewriting it every frame so the prediction is done over the frame collection.
+This real-time prediction system maintained temporal context through a frame buffer capturing and saving a set of frames and rewriting it every frame so the prediction is done over the frame collection.
 
 \begin{verbatim}
 # Initialize system components
@@ -291,18 +280,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 \end{verbatim}
-
-\subsection{Technical limitations and research insights}
-
-This implementation showcased certain limitations that informed already mentioned research conclusions:
-
-\subsubsection{Sensory constraints}
-Computer vision systems remained blind to tactile feedback channels that limit the use of the trained model.
-
-\subsubsection{Individual variation and resistance to standardization}
-Each participating artisan approached identical tasks differently, reflecting experience, histories and preferences that resist standardization.
-
-These limitations demonstrated that while the technical implementation worked as designed, the approach of digitizing embodied knowledge through movement classification "misunderstood" the nature of craft practice.
 
 \clearpage
 \section{\textit{CR3ATED} Technical documentation}
