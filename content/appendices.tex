@@ -596,11 +596,11 @@ The implementation has several limitations. The displacement mapping depends on 
 
 \vspace{0.5cm}
 
-The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/AI_3D_Models_Grasshopper}{github.com/jmuozan/AI\_3D\_Models\_Grasshopper}, and the compiled plugin can be downloaded from \href{https://www.food4rhino.com/en/app/ai-tools}{Food4Rhino}.
+The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/AI_3D_Models_Grasshopper}{GitHub}, and the compiled plugin can be downloaded from \href{https://www.food4rhino.com/en/app/ai-tools}{Food4Rhino}.
 
 \subsection{System architecture overview}
 
-The plugin follows the Rhino Grasshopper plugin architecture and consists of two main components that integrate external AI services into traditional CAD workflows. The implementation combines Python scripts for AI service integration with C\# for Grasshopper component management.
+The plugin consists of two main components that integrate external AI services into the software. The implementation combines Python scripts for AI service integration with C\# for Grasshopper component management.
 
 \vspace{0.5cm}
 
@@ -615,7 +615,7 @@ Tech stack:
 
 \vspace{0.5cm}
 
-Plugin supports STEP, STL, and OBJ file formats, automatic file organization, and real-time integration within the Grasshopper visual programming environment, even though STEP files selected as default due to their superior compatibility with CAD software and preservation of parametric information.
+Plugin supports STEP, STL, and OBJ file formats, automatic file organization, and real-time integration within the Grasshopper visual programming environment. STEP files selected as default due to their superior compatibility with CAD software and preservation of parametric information.
 
 \subsection{Text to CAD component implementation}
 
@@ -625,7 +625,7 @@ Text to CAD component integrates with ZOO's Text-to-CAD API to generate 3D model
 
 \subsubsection{Python script implementation}
 
-The core functionality is the KittyCAD API client use for integration with ZOO's machine learning services. This is how Text-to-CAD looks:
+The core functionality is the KittyCAD API client use for integration with ZOO's machine learning services. 
  
 \begin{verbatim}
 #! python 3
@@ -709,7 +709,7 @@ In order to handle the asynchronous output of machine learning model inference, 
 
 \subsubsection{File import and geometry processing}
 
-The generated STEP files are automatically imported into Rhino and processed into Brep objects through the following file handling:
+The generated STEP files are automatically imported into Rhino and processed into Brep objects.
 
 \begin{verbatim}
 def import_step_file(step_file_path):
@@ -754,40 +754,6 @@ def import_step_file(step_file_path):
 
     return imported_objects
 \end{verbatim}
-
-This import process uses Rhino's native command interface to ensure compatibility with all supported file formats in case the user decides to change them.
-
-\subsubsection{Automatic file organization}
-
-In order to see the different interations and have them organzed, the system includes automatic file organization with versioning and timestamping:
-
-\begin{verbatim}
-def move_and_rename_file(step_file_path):
-    """Move and rename generated files with versioning"""
-    main_directory = os.path.dirname(step_file_path)
-    models_folder = os.path.join(main_directory, "MODELS")
-
-    # Create models directory if needed
-    if not os.path.exists(models_folder):
-        os.makedirs(models_folder)
-        print(f"Created folder: {models_folder}")
-
-    # Generate version number
-    existing_files = [f for f in os.listdir(models_folder) 
-                     if f.endswith('.step') or f.endswith('.stp')]
-    model_number = len(existing_files) + 1
-
-    # Create timestamped filename
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
-    file_name = f"model-{model_number}_{current_time}.step"
-    destination_path = os.path.join(models_folder, file_name)
-
-    # Move file
-    shutil.move(step_file_path, destination_path)
-    print(f"Moved and renamed file to: {destination_path}")
-\end{verbatim}
-
-This organization system creates a MODELS directory within the specified output folder, automatically numbering and timestamping each generated file.
 
 \subsection{Image to prompt component implementation}
 
@@ -879,15 +845,13 @@ This validation system checks for empty or invalid API keys, verifies file path 
 
 For optimal results with the Text-to-CAD component, users should employ clear and specific geometric descriptions, include dimensional information when possible, focus on single objects rather than assemblies, specify material properties if relevant, and use standard engineering terminology. Effective prompts might describe "a cylindrical shaft with a diameter of 25mm and length of 100mm, with a 5mm keyway running along its entire length" or "a rectangular plate 50mm x 30mm x 5mm thick with four 6mm diameter mounting holes positioned 10mm from each corner."
 
-\subsubsection{Image-to-Prompt effectiveness}
+\subsubsection{Image-to-Prompt optimization}
 
-For effective image analysis, users should use high-quality, well-lit images, ensure objects are clearly visible, avoid cluttered backgrounds, include dimensional references when possible, and focus on manufacturable objects. The system works best with images that show single objects from clear viewpoints, preferably with some indication of scale or dimensional reference.
+For effective image analysis, users should use high-quality, well lit images, ensure objects are clearly visible, avoid cluttered backgrounds, and focus on "manufacturable" objects. The system works best with images that show single objects from clear viewpoints, preferably with some indication of scale or dimensional reference.
 
 \subsection{Technical limitations and considerations}
 
 The implementation shows several limitations that inform appropriate usage patterns. The Text-to-CAD component depends on external API availability and requires stable internet connectivity, while generation times vary significantly based on prompt complexity and service load. The Image-to-Prompt component may struggle with complex assemblies, abstract concepts, or images with poor lighting conditions.
-
-Despite these limitations, the plugin successfully shows integration of AI capabilities into traditional CAD workflows, providing designers with new tools for rapid prototyping and concept development while maintaining compatibility with established parametric modeling practices.
 
 \clearpage
 \section{\textit{Ars Post Faber} Technical documentation}
