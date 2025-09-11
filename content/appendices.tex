@@ -288,11 +288,11 @@ The \textit{CR3ATED} web application was developed to test alternative interface
 
 \vspace{0.5cm}
 
-The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/CR3ATED}{github.com/jmuozan/CR3ATED}, and a live demonstration can be accessed at \href{https://jmuozan.github.io/CR3ATED/}{jmuozan.github.io/CR3ATED}.
+The complete source code is available as open-sourced under MIT License at \href{https://github.com/jmuozan/CR3ATED}{github.com/jmuozan/CR3ATED}, and can be accessed at \href{https://jmuozan.github.io/CR3ATED/}{jmuozan.github.io/CR3ATED}.
 
 \subsection{System architecture overview}
 
-The web application implements a complete 3D modeling pipeline using web technologies, focusing on revolution surface generation and mesh processing capabilities. Its modular architecture divides functionalities across specific JavaScript modules for maintainability.
+This web application implements a complete 3D modeling pipeline using web technologies, dividing functionalities across specific JavaScript modules.
 
 \vspace{0.5cm}
 
@@ -339,7 +339,7 @@ This scene initialization creates a THREE.Scene object as the root container for
 
 \subsubsection{Lighting configuration}
 
-In order to ensure consistent visibility from all viewing angles of the 3d object, the web application implements multiple light sources.
+In order to ensure consistent visibility from all viewing angles of the iported or created 3d object, the web application implements multiple light sources.
 
 \begin{verbatim}
 function setupLights(scene) {
@@ -363,9 +363,14 @@ function setupLights(scene) {
 
 \subsection{Drawing interface for 3D generation}
 
-\subsubsection{Modal-based drawing system}
-
 The application includes an integrated drawing interface for users to create revolution surfaces through finger drawing on smartphones or mouse drawing on desktop:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_draw.png}
+\caption{Drawing interface. Source: Author}
+\label{fig: threejs_draw}
+\end{figure}
 
 \begin{verbatim}
 function initDrawingBoard() {
@@ -400,6 +405,13 @@ function initDrawingBoard() {
 \end{verbatim}
 
 The drawing interface creates a popup with SVG-based drawing area. Users can draw profiles that are automatically converted into 3D revolution surfaces through a connection of the 2D coordinates.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_3d.png}
+\caption{CR3ATED 3D model generated. Source: Author}
+\label{fig: threejs_3d}
+\end{figure}
 
 \subsection{Mesh management}
 
@@ -471,7 +483,7 @@ export function downloadSTL(currentMesh) {
 
 \subsubsection{UV coordinate generation}
 
-UV coordinate genration is responsable of creating the mapping between 2D texture space and 3D mesh surfaces for displacement operations:
+UV coordinate genration is the responsable of creating the mapping between 2D texture space and 3D mesh surfaces for posterior displacement operations
 
 \begin{verbatim}
 export function generateUVs(geometry, displacementSettings) {
@@ -505,11 +517,18 @@ export function generateUVs(geometry, displacementSettings) {
 }
 \end{verbatim}
 
-This UV generation process calculates the bounding box of the mesh geometry and projects 3D vertices onto the XZ plane, creating a planar mapping that will allow the displacement operations.
+This UV generation process calculates the bounding box of the mesh geometry and projects 3D vertices onto the XZ plane, creating a planar mapping.
 
 \subsubsection{Displacement calculation and application}
 
-Displacement implements real-time surface deformation based on image height data so mesh vertices can be moved according. to the mapping previousely done based on the desired image by the user.
+Displacement implements real-time surface deformation based on image height data so mesh vertices can be moved according to the mapping previousely done based on the desired image by the user.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_displacement.png}
+\caption{Displacement. Source: Author}
+\label{fig: displacement}
+\end{figure}
 
 \begin{verbatim}
 export function applyDisplacementMap(geometry, texture, scale, displacementSettings) {
@@ -564,19 +583,11 @@ export function applyDisplacementMap(geometry, texture, scale, displacementSetti
 
 \subsection{Usage guidelines and capabilities}
 
-\subsubsection{Drawing interface optimization}
-
-For optimal results with the drawing interface, users should draw "clear", "smooth" profiles that define the silhouette of their desired revolution surface. The system will automatically handle the mathematical transformation from 2D profile to 3D revolution solid.
-
-\subsubsection{Image displacement effectiveness}
-
-For effective displacement mapping, users should use high-contrast images where lighter areas represent raised surfaces and darker areas represent recessed areas, and add higher levels of subdividion to the meshes, as that will define the amount of vertices tha move. The system works best with highquality grayscale images that provide clear height information.
+For optimal results with the drawing interface, users should draw "clear" and as "smooth" as possible profiles of their desired revolution surface. For effective displacement mapping, users should use high-contrast images where lighter areas represent raised surfaces and darker areas represent recessed areas, and add higher levels of subdividion to the meshes, as that will define the amount of vertices tha move. 
 
 \subsection{Technical limitations and considerations}
 
 The implementation has several limitations. The displacement mapping depends on browser Canvas API support and may be computationally intensive for very large meshes. The drawing interface works best on touch devices but also supports mouse input for desktop users even though it might not be properly responsive.
-
-Despite these limitations, the webapp successfully showcases an approach to 3D modeling through direct drawing interaction.
 
 \clearpage
 \section{\textit{AI Tools} Technical documentation}
