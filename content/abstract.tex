@@ -1,14 +1,16 @@
-% Header with advisor names
-\noindent
-\begin{minipage}[t]{0.5\textwidth}
-\raggedright
-Theiss Advisor: Jessica Carmen Guy 
-\end{minipage}%
-\begin{minipage}[t]{0.5\textwidth}
-\raggedleft
-Jorge Muñoz Zanón
-\end{minipage}
-\vspace{1cm}
+\setcounter{chapter}{0}
+\setcounter{section}{0}
+
+% Add acknowledgments to table of contents
+\addcontentsline{toc}{chapter}{Abstract}
+
+% Set up page style for acknowledgments
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyhead[L]{\footnotesize\textit{Ars Post Faber: Digital fabrication democratization through embodied knowledge preservation}}
+\fancyfoot[C]{\thepage} % Page number in footer center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
 
 % Abstract title - left aligned with padding and underline
 \noindent
@@ -20,7 +22,7 @@ Jorge Muñoz Zanón
 % Set no paragraph indentation for the abstract content
 \setlength{\parindent}{0pt}
 
-Digital fabrication technologies have "democratized" access to production tools while perpetuating the industrial era separation between design conception and material execution. This division, which has historically diminished artisanship by fragmenting holistic creative processes, continues to manifest itself in contemporary CAD/CAM workflows that benefit computational precision over embodied knowledge, often reducing creation to pure geometry, failing to preserve the material relationships and adaptive responses characteristic of traditional making practices.
+Digital fabrication technologies have "democratized" access to production tools while perpetuating the industrial era separation between design conception and material execution. This division, which has historically diminished artisanship by fragmenting holistic creative processes, continues to manifest itself in contemporary CAD/CAM workflows that benefit computational precision over embodied knowledge, reducing creation to pure geometry and failing to preserve the material relationships and adaptive responses characteristic of traditional making practices.
 
 \vspace{0.5cm}
 
@@ -28,7 +30,7 @@ This research looks to challenge the assumption that fabrication democratization
 
 \vspace{0.5cm}
 
-Through experimental tool testing and digital fabrication workshops with artisans and makers, this research develops \textit{Ars Post Faber}, an open-source Grasshopper plug-in within the Rhinoceros CAD environment that approaches thinking and making as an integrated practice. The plug-in implements utilities designed to facilitate fluid Human-Software-Machine interactions, looking to enable embodied expression, contextual adaptation, and tacit knowledge to flow throughout the making process. Rather than abstracting away the creative journey, this approach looks to preserve the complete narrative of creation, including modifications, errors, and decision points, as integral components of the final work.
+Through experimental tool testing and digital fabrication workshops with artisans and makers, this research develops \textit{Ars Post Faber}, an open-source Grasshopper plug-in within the Rhinoceros CAD environment that approaches thinking and making as an integrated practice. The plug-in implements utilities designed to facilitate a fluid Human-Software-Machine interactions, looking to enable embodied expression, contextual adaptation, and tacit knowledge to flow throughout the making process. Rather than abstracting away the creative journey, this approach looks to preserve the complete narrative of creation, including modifications, errors, and decision points, as integral components of the final work.
 
 \vspace{0.5cm}
 
