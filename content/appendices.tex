@@ -33,7 +33,7 @@
 
 The code for this project can be found opened under an MIT license on the following \href{https://github.com/jmuozan/ML_Sequence_Recognition}{GitHub} repository.
 
-\subsection{System architecture overview}
+\subsection{Overview}
 
 The system consisted of a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}).
 
@@ -288,19 +288,15 @@ with mp_holistic.Holistic(min_detection_confidence=0.5,
 \clearpage
 \section{\textit{CR3ATED} Technical documentation}
 
-The \textit{CR3ATED} web application was developed to test alternative interface approaches for preserving creative agency within digital fabrication workflows. This technical documentation outlines the implementation of the 3D revolution modeling webapp with focus on its main capabilities: 3D generation from drawings, image-based surface modification, and displacement mapping.
+The \textit{CR3ATED} web application was developed to test alternative interface approaches in order to preserve creative agency within digital fabrication workflows. This technical documentation will explain generally the implementation of the 3D revolution modeling webapp focusing on its main capabilities: 3D generation from drawings, image-based surface modification, and displacement mapping.
 
 \vspace{0.5cm}
 
-The complete source code is available as open-sourced under MIT License at \href{https://github.com/jmuozan/CR3ATED}{github.com/jmuozan/CR3ATED}, and can be accessed at \href{https://jmuozan.github.io/CR3ATED/}{jmuozan.github.io/CR3ATED}.
+The complete source code is open-sourced under an MIT License at \href{https://github.com/jmuozan/CR3ATED}{GitHub}, and can the live website can be accessed \href{https://jmuozan.github.io/CR3ATED/}{here}.
 
-\subsection{System architecture overview}
+\subsection{System overview}
 
-This web application implements a complete 3D modeling pipeline using web technologies, dividing functionalities across specific JavaScript modules.
-
-\vspace{0.5cm}
-
-Core technology stack:
+Tech stack:
 \begin{enumerate}
 \item Three.js for 3D rendering and scene management
 \item WebGL-accelerated graphics through Three.js WebGLRenderer
@@ -316,7 +312,7 @@ The webapp supports STL import/export, image-based displacement mapping, interac
 
 \subsubsection{Basic scene setup}
 
-A core 3D environment is initiallized through a scene configuration that establishes the WebGL rendering context and user interaction capabilities:
+A core 3D environment is initiallized through a scene configuration that establishes the WebGL rendering context, to see the 3D on the web and user controls for interaction. 
 
 \begin{verbatim}
 export function initializeScene() {
@@ -339,11 +335,9 @@ export function initializeScene() {
 }
 \end{verbatim}
 
-This scene initialization creates a THREE.Scene object as the root container for all 3D objects.
-
 \subsubsection{Lighting configuration}
 
-In order to ensure consistent visibility from all viewing angles of the iported or created 3d object, the web application implements multiple light sources.
+In order to ensure consistent visibility from all viewing angles of the iported or created 3d object, multiple light sources were added to the application.
 
 \begin{verbatim}
 function setupLights(scene) {
@@ -365,9 +359,9 @@ function setupLights(scene) {
 }
 \end{verbatim}
 
-\subsection{Drawing interface for 3D generation}
+\subsection{Drawing interface}
 
-The application includes an integrated drawing interface for users to create revolution surfaces through finger drawing on smartphones or mouse drawing on desktop:
+The application includes a drawing interface for users to create the revolution surfaces through finger drawing on smartphones or mouse drawing on desktop by draweing the profile.
 
 \begin{figure}[H]
 \centering
@@ -408,7 +402,7 @@ function initDrawingBoard() {
 }
 \end{verbatim}
 
-The drawing interface creates a popup with SVG-based drawing area. Users can draw profiles that are automatically converted into 3D revolution surfaces through a connection of the 2D coordinates.
+This drawing interface creates opens as a popup with an SVG drawing area. the profiles drawn by the users are automatically converted into 3D revolution surfaces through a connection of the 2D coordinates and revolved through three.js.
 
 \begin{figure}[H]
 \centering
@@ -419,9 +413,7 @@ The drawing interface creates a popup with SVG-based drawing area. Users can dra
 
 \subsection{Mesh management}
 
-\subsubsection{STL import functionality}
-
-The application also provides STL file loading capabilities to allow user bring and modify their own models.
+The application also provides STL file loading capabilities to allow users bring and modify their own models.
 
 \begin{verbatim}
 export function handleSTLUpload(params) {
@@ -459,11 +451,11 @@ export function handleSTLUpload(params) {
 }
 \end{verbatim}
 
-The import process uses Three.js STLLoader to parse binary or ASCII STL files. The system will automatically compute vertex normals for proper lighting and store vertex positions for posterior displacement operations.
+This import process uses Three.js STLLoader to parse either binary or ASCII STL files. The system will automatically compute vertex normals for proper lighting and store vertex positions for posterior displacement operations.
 
-\subsubsection{STL export capability}
+\vspace{0.5cm}
 
-The application also enables the STL export of modified geometries:
+Besides this, when finished, the application also enables the STL export of modified geometries.
 
 \begin{verbatim}
 export function downloadSTL(currentMesh) {
@@ -525,7 +517,7 @@ This UV generation process calculates the bounding box of the mesh geometry and 
 
 \subsubsection{Displacement calculation and application}
 
-Displacement implements real-time surface deformation based on image height data so mesh vertices can be moved according to the mapping previousely done based on the desired image by the user.
+Displacement on the other hand implements real-time surface deformation based on image height data so mesh vertices can be moved according to the mapping previousely done based on the desired image by the user.
 
 \begin{figure}[H]
 \centering
@@ -587,11 +579,11 @@ export function applyDisplacementMap(geometry, texture, scale, displacementSetti
 
 \subsection{Usage guidelines and capabilities}
 
-For optimal results with the drawing interface, users should draw "clear" and as "smooth" as possible profiles of their desired revolution surface. For effective displacement mapping, users should use high-contrast images where lighter areas represent raised surfaces and darker areas represent recessed areas, and add higher levels of subdividion to the meshes, as that will define the amount of vertices tha move. 
+For optimal results with the drawing interface, users should draw "clear" and as "smooth" as possible profiles of their desired revolution surface. For effective displacement mapping, users should use high-contrast images where lighter areas represent raised surfaces and darker areas represent recessed areas, adding, if possible, higher levels of subdividion to the meshes, as that will define the amount of vertices tha move. 
 
 \subsection{Technical limitations and considerations}
 
-The implementation has several limitations. The displacement mapping depends on browser Canvas API support and may be computationally intensive for very large meshes. The drawing interface works best on touch devices but also supports mouse input for desktop users even though it might not be properly responsive.
+The implementation has several limitations, the displacement mapping depends on browser Canvas API support and may be computationally intensive for very large meshes. The drawing interface works best on touch devices but also supports mouse input for desktop users even though the web might not be properly responsive.
 
 \clearpage
 \section{\textit{AI Tools} Technical documentation}
