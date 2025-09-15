@@ -588,15 +588,15 @@ The implementation has several limitations, the displacement mapping depends on 
 \clearpage
 \section{\textit{AI Tools} Technical documentation}
 
-\textit{AI Tools} plugin is an integration of artificial intelligence capabilities into parametric design workflows through Grasshopper. This technical documentation outlines the implementation of the two components that represent the plugin using external AI services to generate 3D models from text prompts and analyze images to create detailed modeling instructions.
+\textit{AI Tools} plugin is an integration of artificial intelligence capabilities into parametric design workflows through Grasshopper. The documentation presented here will explain how thetwo components that represent the plugin use external AI services to generate 3D models from text prompts and analyze images to create detailed modeling instructions.
 
 \vspace{0.5cm}
 
-The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/AI_3D_Models_Grasshopper}{GitHub}, and the compiled plugin can be downloaded from \href{https://www.food4rhino.com/en/app/ai-tools}{Food4Rhino}.
+Source code is available and opened under MIT License at \href{https://github.com/jmuozan/AI_3D_Models_Grasshopper}{GitHub}, and the compiled plugin can be downloaded from \href{https://www.food4rhino.com/en/app/ai-tools}{Food4Rhino}.
 
 \subsection{System architecture overview}
 
-The plugin consists of two main components that integrate external AI services into the software. The implementation combines Python scripts for AI service integration with C\# for Grasshopper component management.
+The plugin consists of two main components that integrate AI services into the software. The source code combines Python scripts for AI service integration with C\# for Grasshopper component management.
 
 \vspace{0.5cm}
 
@@ -611,17 +611,15 @@ Tech stack:
 
 \vspace{0.5cm}
 
-Plugin supports STEP, STL, and OBJ file formats, automatic file organization, and real-time integration within the Grasshopper visual programming environment. STEP files selected as default due to their superior compatibility with CAD software and preservation of parametric information.
+Plugin supports STEP, STL, and OBJ file formats and real-time integration within the Grasshopper visual programming environment. STEP files selected as default due to their superior compatibility with CAD software and preservation of parametric information.
 
 \subsection{Text to CAD component implementation}
 
-\subsubsection{Component architecture}
+Text to CAD component integrates with ZOO's Text-to-CAD API to generate 3D models from natural language descriptions. The component receives four input parameters: API key for ZOO authentication, directory path for temporary file storage, text prompt describing the desired 3D model and a boolean trigger to initiate generation. The outputs include the generated Brep geometry and the file path to the created STEP file.
 
-Text to CAD component integrates with ZOO's Text-to-CAD API to generate 3D models from natural language descriptions. The component receives four input parameters: API key for ZOO authentication, directory path for temporary file storage, text prompt describing the desired 3D model, and a boolean trigger to initiate generation. The outputs include the generated Brep geometry and the file path to the created STEP file.
+\subsubsection{File generation}
 
-\subsubsection{Python script implementation}
-
-The core functionality is the KittyCAD API client use for integration with ZOO's machine learning services. 
+The main functionality is the KittyCAD API client use for integration with ZOO's machine learning services. 
  
 \begin{verbatim}
 #! python 3
@@ -701,9 +699,9 @@ if run_code:
             print(f"Saved to {output_file_path}")
 \end{verbatim}
 
-In order to handle the asynchronous output of machine learning model inference, the script implements a polling, checking completion status every five seconds until the model generates results.
+In order to handle the asynchronous output of the machine learning model inference, the script has a polling, checking completion status every five seconds until the model generates results.
 
-\subsubsection{File import and geometry processing}
+\subsubsection{File import}
 
 The generated STEP files are automatically imported into Rhino and processed into Brep objects.
 
@@ -753,9 +751,9 @@ def import_step_file(step_file_path):
 
 \subsection{Image to prompt component implementation}
 
-\subsubsection{OpenAI vision API integration}
+\subsubsection{OpenAI vision API}
 
-The Image to Prompt component utilizes OpenAI's GPT-4 Vision API to analyze images and generate detailed descriptions suitable for Text-to-CAD modeling. The component accepts two inputs: OpenAI API key for authentication and file path to the input image, producing a text description of how the 3D modeling should be done.
+The Image to Prompt component uses OpenAI's GPT-4 Vision API to analyze images and generate detailed descriptions suitable for Text-to-CAD modeling. The component accepts two inputs, the OpenAI API key for authentication and file path to the input image, producing a text description of how the 3D modeling should be done.
 
 \begin{verbatim}
 from openai import OpenAI
@@ -805,13 +803,11 @@ response = client.chat.completions.create(
 a = response.choices[0].message.content
 \end{verbatim}
 
-The implementation uses base64 encoding to transmit images through the API, enabling support for various image formats including JPEG, PNG, and other common types. The system prompt is instructed to generate descriptions that focus on geometric primitives, dimensional specifications, and CAD-compatible operations.
+The implementation uses base64 encoding to transmit images through the API, enabling support for various image formats including JPEG and PNG. The system prompt is instructed to generate descriptions that focus on geometric primitives, dimensional specifications, and CAD-compatible operations.
 
 \subsection{Error handling and validation}
 
-\subsubsection{Input validation system}
-
-The components also implement certain input validation to prevent common usage errors:
+The components also implement an input validation to prevent usage errors, and help debbugging.
 
 \begin{verbatim}
 # API key validation
@@ -837,17 +833,17 @@ This validation system checks for empty or invalid API keys, verifies file path 
 
 \subsection{Usage guidelines and best practices}
 
-\subsubsection{Text-to-CAD optimization}
+\subsubsection{Text-to-CAD}
 
-For optimal results with the Text-to-CAD component, users should employ clear and specific geometric descriptions, include dimensional information when possible, focus on single objects rather than assemblies, specify material properties if relevant, and use standard engineering terminology. Effective prompts might describe "a cylindrical shaft with a diameter of 25mm and length of 100mm, with a 5mm keyway running along its entire length" or "a rectangular plate 50mm x 30mm x 5mm thick with four 6mm diameter mounting holes positioned 10mm from each corner."
+For optimal results with the Text-to-CAD component, users should employ clear and specific geometric descriptions, include dimensional information when possible, focus on single objects rather than assemblies, and use standard engineering terminology. Effective prompts might describe \textit{a cylindrical shaft with a diameter of 25mm and length of 100mm, with a 5mm keyway running along its entire length} or \textit{a rectangular plate 50mm x 30mm x 5mm thick with four 6mm diameter mounting holes positioned 10mm from each corner}
 
-\subsubsection{Image-to-Prompt optimization}
+\subsubsection{Image-to-Prompt}
 
-For effective image analysis, users should use high-quality, well lit images, ensure objects are clearly visible, avoid cluttered backgrounds, and focus on "manufacturable" objects. The system works best with images that show single objects from clear viewpoints, preferably with some indication of scale or dimensional reference.
+For effective image analysis, users should use high quality, ensure objects are clearly visible, avoid cluttered backgrounds and focus on "manufacturable" objects.
 
 \subsection{Technical limitations and considerations}
 
-The implementation shows several limitations that inform appropriate usage patterns. The Text-to-CAD component depends on external API availability and requires stable internet connectivity, while generation times vary significantly based on prompt complexity and service load. The Image-to-Prompt component may struggle with complex assemblies, abstract concepts, or images with poor lighting conditions.
+The implementation shows several limitations. On one hand, the Text-to-CAD component depends on external API availability and requires stable internet connectivity and generation times vary significantly based on prompt complexity and service load, while on the other hand, Image-to-Prompt component may struggle with complex assemblies, abstract concepts, or images with poor lighting conditions.
 
 \clearpage
 \section{\textit{Ars Post Faber} Technical documentation}
