@@ -848,13 +848,13 @@ The implementation shows several limitations. On one hand, the Text-to-CAD compo
 \clearpage
 \section{\textit{Ars Post Faber} Technical documentation}
 
-\textit{Ars Post Faber}, the Grasshopper plugin generated as a result of this thesis, represents a digital fabrication toolkit that attempts to bridge parametric design with physical production. The following technical documentation outlines the main implementation of the five core component categories that enable complete 3D printing workflows, serial communication, mesh processing, photogrammetry, and AI component generation.
+\textit{Ars Post Faber}, the Grasshopper plugin generated as a result of this thesis, is a digital design and fabrication toolkit that attempts to bridge parametric design with physical production. The following technical documentation outlines the design of the core components that enable complete 3D printing workflows, serial communication, mesh processing, photogrammetry, and AI component generation.
 
 \vspace{0.5cm}
 
 The complete source code is available as open-source under MIT License at \href{https://github.com/jmuozan/ArsPostFaber}{GitHub}, with build instructions and component documentation available online on \href{https://jmuozan.github.io/ArsPostFaber-docs/}{ArsPostFaber-docs}.
 
-\subsection{System overview}
+\vspace{0.5cm}
 
 Technology stack:
 \begin{enumerate}
@@ -866,11 +866,11 @@ Technology stack:
 
 \subsection{AI component generation}
 
-The AI component generation system implements Grasshopper component creation through two primary approaches: cloud-based OpenAI API integration and local Ollama model execution. Both components share a common compilation pipeline using Microsoft's Roslyn compiler.
+The AI component generation implements a Grasshopper component creation through two primary approaches, a cloud-based OpenAI API integration and a local Ollama model execution. Both components share the same compilation process using Microsoft's Roslyn compiler.
 
 \subsubsection{OpenAI integration component}
 
-The OpenAI-powered component generator implements an "agent mode" with recursive error correction and PDF context integration:
+The OpenAI-powered component generator implements a kind of "agent mode" with recursive error correction anda PDF context integration
 
 \begin{verbatim}
 public class OpenAIComponentGeneratorComponent : GH_Component_HTTPAsync
@@ -887,11 +887,11 @@ public class OpenAIComponentGeneratorComponent : GH_Component_HTTPAsync
 }
 \end{verbatim}
 
-It includes generation with infinite retry loops using compilation diagnostics feedback, PDF context loading that extracts relevant context from reference materials, error correction that analyzes compilation errors and generates targeted fix prompts, and cross-platform compilation.
+Including infinite retry loops using compilation diagnostics feedback, error correction that analyzes compilation errors and generates targeted fix prompts, and cross-platform compilation.
 
 \subsubsection{Ollama local model integration}
 
-The local model variant provides offline operation using Ollama's REST API.
+The local model variant provides offline capabilities using Ollama's REST API.
 
 \begin{verbatim}
 public class OllamaComponentMakerComponent : GH_Component_HTTPAsync
@@ -918,9 +918,9 @@ public class OllamaComponentMakerComponent : GH_Component_HTTPAsync
 }
 \end{verbatim}
 
-\subsubsection{Dynamic compilation system}
+\subsubsection{compilation}
 
-Roslyn runtime compilation used by both components.
+The Roslyn runtime compilation used by both components.
 
 \begin{verbatim}
 private void CompileCode(string code, string outputPath)
@@ -960,7 +960,7 @@ private void CompileCode(string code, string outputPath)
 
 \subsubsection{PDF context management}
 
-PDF context extraction for beytter code generation.
+PDF context extraction is used for beytter code generation or specific use cases such as generating specific shapes described.
 
 \begin{verbatim}
 public static class PdfContextManager
@@ -999,7 +999,7 @@ public static class PdfContextManager
 
 \subsection{3D printing pipeline}
 
-The 3D printing pipeline implements a complete chain from 3D geometry to ready G-code through five interconnected components: SlicerSettings, SliceGeometry, ShellGeometry, InfillGeometry, and GCodeGenerator.
+The 3D printing pipeline implements a complete chain from 3D geometry to ready G-code through five interconnected functions being SlicerSettings, SliceGeometry, ShellGeometry, InfillGeometry, and GCodeGenerator.
 
 \subsubsection{Geometry processing}
 
@@ -1033,7 +1033,7 @@ protected override void SolveInstance(IGH_DataAccess DA)
 }
 \end{verbatim}
 
-\subsubsection{Shell and perimeter generation}
+\subsubsection{Shell}
 
 Shell generation creates offset perimeter curves and identifies infill regions.
 
@@ -1071,7 +1071,7 @@ protected override void SolveInstance(IGH_DataAccess DA)
 
 \subsubsection{G-code generation}
 
-The G-code generator implements motion planning, including automatic detection and conversion of linear segments to G2/G3 arc commands, smoothing algorithms including moving average and angular decimation, speed reduction for sharp corners and direction changes.
+The G-code generator includes motion planning, detection and conversion of linear segments to G2/G3 arc commands, and smoothing algorithms.
 
 \begin{verbatim}
 // Arc detection and interpolation
@@ -1107,7 +1107,7 @@ private static bool TryFitCircleRobust(List<Point3d> pts, double tol,
 
 \subsection{Serial communication system}
 
-The serial communication system provides 3D printer control including cross-platform compatibility through serial port implementations.
+The serial communication system provides live 3D printer control including a cross-platform compatibility through serial port implementations.
 
 \begin{verbatim}
 internal interface ISerialPort
@@ -1171,7 +1171,7 @@ internal class UnixSerialPort : ISerialPort
 
 \vspace{0.5cm}
 
-The main serial control component implements print job management with buffer control and real-time visualization of the path, matching printer receive buffer capacity, and real-time visualization with live updating of executed and pending toolpath segments.
+The main serial control component implements print job management with buffer control and real-time visualization of the path in the rhino interface, matching printer receive buffer capacity.
 
 \begin{verbatim}
 public class SerialControlComponent : GH_Component
@@ -1197,7 +1197,7 @@ public class SerialControlComponent : GH_Component
 
 \subsection{Mesh processing and editing}
 
-The mesh processing system provides mesh editing capabilities through Eto.Forms based interfaces with hand tracking integration.
+The mesh processing system provides mesh editing capabilities through Eto.Forms based interfaces with hand tracking control.
 
 \begin{verbatim}
 public class MeshEditComponent : GH_Component
@@ -1244,7 +1244,7 @@ public class MeshEditComponent : GH_Component
 
 \subsubsection{Editing with hand tracking}
 
-Editing features include hand tracking using MediaPipe-based hand gesture control for touchless editing, and a lasso vertex selection enabling freehand selection of vertex groups for manipulation.
+Editing features with hand tracking using MediaPipe hand gesture control for touchless editing, and a lasso vertex selection of vertex groups for manipulation.
 
 \begin{verbatim}
 internal class MeshEditForm : Form
@@ -1270,8 +1270,6 @@ internal class MeshEditForm : Form
     private bool _isGroupDragging = false;
 }
 \end{verbatim}
-
-\subsubsection{Hand tracking implementation}
 
 \begin{verbatim}
 private void StartHandTracking()
@@ -1341,7 +1339,7 @@ private void StartHandTracking()
 
 \subsection{Photogrammetry system}
 
-The photogrammetry system provides 3D reconstructions from mobile device capture through integrated web server using the Apple's RealityKit processing. This pipeline includes a mobile web interface with HTML interface for video capture and upload, automatic frame extraction using FFmpeg, the RealityKit processing, and integration of automatic import into Rhino workspace.
+The photogrammetry system allows to do 3D reconstructions, from mobile device capture through an integrated web server using Apple's RealityKit for processing. This workflow includes a mobile web interface with HTML interface for video capture and upload, automatic frame extraction using FFmpeg, the RealityKit processing, andthe automatic import into Rhino workspace.
 
 \vspace{0.5cm}
 
@@ -1368,7 +1366,7 @@ public class PhotogrammetryComponent : GH_Component
 }
 \end{verbatim}
 
-\subsubsection{RealityKit integration and processing}
+\subsubsection{RealityKit integration}
 
 \begin{verbatim}
 private void RunPhotogrammetry()
@@ -1445,8 +1443,8 @@ private void RunPhotogrammetry()
 
 \subsection{Technical limitations of cross-platform compatibility}
 
-The implementation addresses several platform-specific challenges. For serial communication, Windows systems use \texttt{SerialPortStream}, while Unix systems implement direct FileStream access with \texttt{stty} configuration for maximum control, and automatic port detection handles different device naming conventions across platforms.
+The implementation attempts to address several platform specific challenges. For serial communication, Windows systems use \texttt{SerialPortStream}, while Unix (MacOS) implement direct FileStream access with \texttt{stty}.
 
 \subsection{Usage guidelines and best practices}
 
-For ther AI component generation, users should use specific, technically accurate descriptions for best code generation results and leverage PDF context if possible.
+For ther AI component generation, users should use specific, technically accurate descriptions for best code generation results and leverage PDF context if possible, so result requires less compilation time and tokens. In order to use the Ollama local configuration, a high end system hardware will be required.
