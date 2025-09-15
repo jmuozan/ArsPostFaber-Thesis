@@ -27,19 +27,19 @@
 
 \section{\textit{AI.RTISANSHIP} technical documentation}
 
-\textit{AI.RTISANSHIP} experiment represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning. This technical documentation outlines the implementation pipeline, from data collection through real-time prediction deployment.
+\textit{AI.RTISANSHIP} experiment, mentioned in Chapter 2, represented an attempt to capture and digitize traditional pottery techniques through computer vision and machine learning. The following technical documentation outlines its implementation, from data collection to the real-time prediction deployment.
 
 \vspace{0.5cm}
 
-The code for this project can be found opened under an MIT license on the following GitHub repository: \href{https://github.com/jmuozan/ML_Sequence_Recognition}{github.com/jmuozan/ML\_Sequence\_Recognition}
+The code for this project can be found opened under an MIT license on the following \href{https://github.com/jmuozan/ML_Sequence_Recognition}{GitHub} repository.
 
 \subsection{System architecture overview}
 
-The system implemented a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}), building from data collection to real-time prediction capabilities.
+The system consisted of a machine learning system organized into seven main sections within a Jupyter notebook environment (\texttt{ML\_Sequence\_Recognition.ipynb}).
 
 \vspace{0.5cm}
 
-Technology stack:
+Technology stack used:
 \begin{enumerate}
 \item MediaPipe for holistic landmark detection (pose and hand tracking)
 \item OpenCV for computer vision and video processing
@@ -47,20 +47,22 @@ Technology stack:
 \item Pandas and NumPy for data processing and feature extraction
 \end{enumerate}
 
-This system captures 225-dimensional feature vectors from pose and hand landmarks, processes sequences through LSTM networks, and provides real-time feedback about movement correctness.
+\vspace{0.5cm}
+
+This system developed captures 225-dimensional feature vectors from pose and hand landmarks using MediaPipe, processes sequences through LSTM networks, and provides real-time feedback about movement correctness sequences.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/mp_points.png}
+\includegraphics[width=1\textwidth]{figures/appendices/mp_points.png}
 \caption{Points detected. Source: }
 \label{fig: mp_points}
 \end{figure}
 
-\subsection{Data collection and MediaPipe integration}
+\subsection{Data collection}
 
 \subsubsection{Library setup and MediaPipe configuration}
 
-MediaPipe's holistic model was used to do a simultaneous pose and hand tracking.
+MediaPipe's holistic model was used to do a simultaneous pose and hand tracking through webcam live recording.
 
 \begin{verbatim}
 import mediapipe as mp
@@ -96,7 +98,7 @@ with mp_pose.Pose(min_detection_confidence=0.5,
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 \end{verbatim}
 
-The detection confidence thresholds of 0.5 looked to balance accuracy and processing speed across frames.
+The detection confidence thresholds of 0.5 looked to balance accuracy and processing speed across frames, as hardware limitations and accuracy of the model did not allow for higher numbers.
 
 \subsubsection{Feature extraction system}
 
@@ -120,9 +122,11 @@ def extract_keypoints(results):
     return np.concatenate([pose, lh, rh])
 \end{verbatim}
 
+Extracted data points positions into numpy arrays for posterior processing.
+
 \subsubsection{Semi-automated data labeling}
 
-The data collection implements a semiautomatic labeling based on a keyboard key controlled system for movement sequences, allowing for a "real-time" labeling.
+Over the data, a semiautomatic labeling was applied based on a keyboard key controlled system for movement sequences, allowing for a "real-time" labeling, setting sequence points assigned to movements.
 
 \begin{verbatim}
 # Recording control system
@@ -141,7 +145,7 @@ elif key == ord('q'):  # Quit application
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/PS_Keyboard.png}
+\includegraphics[width=1\textwidth]{figures/appendices/PS_Keyboard.png}
 \caption{Points detected. Source: Author}
 \label{fig: keyboard}
 \end{figure}
@@ -150,11 +154,11 @@ elif key == ord('q'):  # Quit application
 
 \subsubsection{Data consolidation and labeling}
 
-After labeling multiple recording sessions, these are combined into a unified training dataset.
+After labeling multiple recording sessions, these were combined into a unified training dataset and converted to .csv files for an easier training.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/Folder_structure.png}
+\includegraphics[width=1\textwidth]{figures/appendices/Folder_structure.png}
 \caption{Points detected. Source: Author}
 \label{fig: folder_structure}
 \end{figure}
@@ -242,7 +246,7 @@ The system provided visual feedback through color-coded landmark rendering - gre
 
 \subsubsection{Rolling buffer for temporal context}
 
-This real-time prediction system maintained temporal context through a frame buffer capturing and saving a set of frames and rewriting it every frame so the prediction is done over the frame collection.
+This real-time prediction system maintained temporal context through a frame buffer capturing, saving a set of frames and rewriting it every frame so the prediction is done over the frame collection.
 
 \begin{verbatim}
 # Initialize system components
@@ -367,7 +371,7 @@ The application includes an integrated drawing interface for users to create rev
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_draw.png}
+\includegraphics[width=1\textwidth]{figures/appendices/Threejs_draw.png}
 \caption{Drawing interface. Source: Author}
 \label{fig: threejs_draw}
 \end{figure}
@@ -408,7 +412,7 @@ The drawing interface creates a popup with SVG-based drawing area. Users can dra
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_3d.png}
+\includegraphics[width=1\textwidth]{figures/appendices/Threejs_3d.png}
 \caption{CR3ATED 3D model generated. Source: Author}
 \label{fig: threejs_3d}
 \end{figure}
@@ -525,7 +529,7 @@ Displacement implements real-time surface deformation based on image height data
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/appendices/Threejs_displacement.png}
+\includegraphics[width=1\textwidth]{figures/appendices/Threejs_displacement.png}
 \caption{Displacement. Source: Author}
 \label{fig: displacement}
 \end{figure}
