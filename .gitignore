@@ -254,3 +254,7 @@ $RECYCLE.BIN/
 # Linux
 *~
 .nfs*main.pdf
+
+
+main.pdf 
+output.docx
