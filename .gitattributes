@@ -1,0 +1,2 @@
+ArsPostFaber.docx filter=lfs diff=lfs merge=lfs -text
+ArsPostFaber.pdf filter=lfs diff=lfs merge=lfs -text
